@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeTown ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #FFB7D5;
+  --pink-dark: #FF85B3;
+  --pink-deep: #e05a8a;
+  --lavender: #C9B8FF;
+  --lavender-dark: #9D85F5;
+  --mint: #B8F0D8;
+  --mint-dark: #5DDBA8;
+  --yellow: #FFE999;
+  --yellow-dark: #FFD43B;
+  --peach: #FFD4B8;
+  --peach-dark: #FFB07A;
+  --sky: #B8E4FF;
+  --sky-dark: #5BC4FF;
+  --white: #FFFDF9;
+  --cream: #FFF8F0;
+  --paper: #FFFCF7;
+  --ink: #3D2B4A;
+  --ink-light: #7A5A8A;
+  --shadow: rgba(180,140,200,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#FFF0F8;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 15% 20%,rgba(255,183,213,0.3) 0%,transparent 40%),radial-gradient(circle at 85% 75%,rgba(201,184,255,0.3) 0%,transparent 40%),radial-gradient(circle at 50% 50%,rgba(184,240,216,0.2) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:flex;}
+
+/* PROFILE */
+#screen-profile{flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;gap:2rem;}
+.game-logo h1{font-size:clamp(2.5rem,8vw,5rem);font-weight:900;color:var(--ink);letter-spacing:-1px;line-height:1;text-align:center;}
+.game-logo h1 span{color:var(--pink-deep);}
+.game-logo .tagline{font-size:1rem;color:var(--ink-light);font-weight:600;margin-top:4px;text-align:center;}
+.profile-cards{display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;}
+.profile-card{background:var(--white);border-radius:28px;padding:2rem 2.5rem;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;box-shadow:0 8px 32px var(--shadow);min-width:200px;}
+.profile-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 48px var(--shadow);}
+.profile-card.lidia{border-color:var(--lavender-dark);}
+.profile-card.nerea{border-color:var(--pink-dark);}
+.profile-avatar{width:100px;height:100px;border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.lidia .profile-avatar{background:linear-gradient(135deg,var(--lavender),var(--sky));}
+.nerea .profile-avatar{background:linear-gradient(135deg,var(--pink),var(--yellow));}
+.profile-card h2{font-size:1.6rem;font-weight:800;color:var(--ink);}
+.profile-card p{font-size:0.85rem;color:var(--ink-light);font-weight:600;margin-top:4px;}
+.coins-badge{display:inline-flex;align-items:center;gap:4px;background:var(--yellow);border-radius:99px;padding:4px 12px;font-size:0.85rem;font-weight:800;color:#7A5500;margin-top:10px;}
+
+/* GAME LAYOUT */
+#screen-game{flex-direction:row;min-height:100vh;align-items:stretch;}
+.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:2px solid rgba(255,183,213,0.4);padding:1.25rem 1rem;display:flex;flex-direction:column;gap:1rem;position:relative;z-index:2;}
+.sidebar-logo{font-size:1.2rem;font-weight:900;color:var(--ink);text-align:center;letter-spacing:-0.5px;}
+.sidebar-logo span{color:var(--pink-deep);}
+.player-badge{background:var(--cream);border-radius:16px;padding:0.75rem;text-align:center;}
+.player-badge .avatar-sm{width:52px;height:52px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+.player-badge h3{font-size:1rem;font-weight:800;color:var(--ink);}
+.player-badge .role{font-size:0.72rem;color:var(--ink-light);font-weight:600;}
+.coin-display{background:var(--yellow);border-radius:14px;padding:0.6rem 0.8rem;display:flex;align-items:center;justify-content:space-between;}
+.coin-display span:first-child{font-size:0.8rem;font-weight:700;color:#7A5500;}
+.coin-count{font-size:1.3rem;font-weight:900;color:#7A5500;}
+.sidebar-nav{display:flex;flex-direction:column;gap:6px;margin-top:auto;}
+.nav-btn{background:var(--cream);border:2px solid transparent;border-radius:14px;padding:0.6rem 0.8rem;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;transition:all 0.15s;display:flex;align-items:center;gap:8px;}
+.nav-btn:hover{background:var(--pink);border-color:var(--pink-dark);}
+.nav-btn.active{background:var(--lavender);border-color:var(--lavender-dark);}
+.nav-btn .icon{font-size:1.1rem;}
+.sparks-wrap{background:var(--mint);border-radius:16px;padding:0.75rem;border:2px solid var(--mint-dark);}
+.sparks-face{font-size:2.5rem;text-align:center;line-height:1;margin-bottom:4px;}
+.sparks-bubble{background:var(--white);border-radius:10px;padding:6px 8px;font-size:0.72rem;font-weight:700;color:var(--ink);line-height:1.4;min-height:40px;position:relative;}
+.sparks-bubble::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);border:4px solid transparent;border-bottom-color:var(--white);}
+
+/* MAIN AREA */
+.main-area{flex:1;display:flex;flex-direction:column;padding:1.5rem;gap:1rem;overflow:hidden;}
+.task-header{display:flex;align-items:center;gap:1rem;}
+.task-type-badge{background:var(--lavender);border-radius:99px;padding:4px 14px;font-size:0.78rem;font-weight:800;color:#3D2B8A;}
+.task-title-text{font-size:1rem;font-weight:700;color:var(--ink-light);}
+.next-task-btn{margin-left:auto;background:var(--peach);border:2px solid var(--peach-dark);border-radius:14px;padding:6px 16px;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;color:#7A3500;cursor:pointer;transition:all 0.15s;}
+.next-task-btn:hover{transform:scale(1.05);}
+
+/* DOCUMENT */
+.doc-frame{flex:1;background:var(--paper);border-radius:20px;box-shadow:0 4px 24px var(--shadow),inset 0 0 0 1px rgba(200,160,220,0.2);overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.doc-toolbar{background:#F0EBF8;padding:8px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(200,160,220,0.3);}
+.doc-toolbar-dot{width:10px;height:10px;border-radius:50%;}
+.doc-title-bar{font-family:'Special Elite',cursive;font-size:0.85rem;color:var(--ink-light);margin-left:4px;}
+.doc-status{margin-left:auto;font-size:0.72rem;color:var(--ink-light);font-weight:600;}
+.doc-body{flex:1;padding:1.5rem 2.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:0.5rem;}
+.doc-report-title{font-family:'Special Elite',cursive;font-size:1.1rem;color:var(--ink);margin-bottom:4px;padding-bottom:8px;border-bottom:2px solid rgba(200,160,220,0.4);}
+.doc-line{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px dashed rgba(200,160,220,0.3);font-size:0.95rem;color:var(--ink);font-weight:600;}
+.doc-line .line-label{color:var(--ink-light);font-size:0.85rem;min-width:160px;}
+.doc-line .line-answer{font-family:'Special Elite',cursive;color:var(--pink-deep);min-width:80px;font-size:1rem;}
+.doc-line .line-answer.correct{color:#1A8A50;}
+.task-zone{background:rgba(255,183,213,0.15);border:2px dashed var(--pink-dark);border-radius:16px;padding:1.2rem 1.5rem;margin:0.5rem 0;display:flex;flex-direction:column;gap:0.75rem;}
+.task-prompt{font-size:1rem;font-weight:700;color:var(--ink);}
+.task-target{font-size:clamp(2rem,6vw,3.5rem);font-weight:900;color:var(--lavender-dark);letter-spacing:4px;line-height:1;}
+.task-input-row{display:flex;align-items:center;gap:10px;}
+.task-input{font-family:'Special Elite',cursive;font-size:1.4rem;padding:8px 14px;border:2.5px solid var(--lavender-dark);border-radius:12px;background:var(--white);color:var(--ink);outline:none;min-width:120px;max-width:240px;transition:border-color 0.15s;}
+.task-input:focus{border-color:var(--pink-deep);}
+.task-input.shake{animation:shake 0.35s ease;border-color:#CC2222;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+.submit-btn{background:var(--pink-dark);border:none;border-radius:12px;padding:10px 20px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;color:white;cursor:pointer;transition:transform 0.15s,background 0.15s;}
+.submit-btn:hover{transform:scale(1.05);background:var(--pink-deep);}
+.free-typing-area{font-family:'Special Elite',cursive;font-size:1rem;width:100%;min-height:80px;border:2.5px solid var(--lavender-dark);border-radius:12px;background:var(--white);color:var(--ink);padding:10px 14px;resize:none;outline:none;line-height:1.6;}
+.free-typing-area:focus{border-color:var(--pink-deep);}
+.counting-objects{display:flex;flex-wrap:wrap;gap:8px;margin:0.5rem 0;}
+.count-obj{font-size:1.8rem;animation:popIn 0.3s ease both;}
+@keyframes popIn{from{transform:scale(0) rotate(-20deg);opacity:0;}to{transform:scale(1) rotate(0deg);opacity:1;}}
+
+/* PROGRESS BAR */
+.progress-wrap{display:flex;align-items:center;gap:8px;}
+.progress-bar{flex:1;height:8px;background:rgba(200,160,220,0.2);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--pink-dark),var(--lavender-dark));border-radius:99px;transition:width 0.4s ease;}
+.progress-label{font-size:0.72rem;color:var(--ink-light);font-weight:700;}
+
+/* KEYBOARD */
+.keyboard-hint{background:rgba(255,255,255,0.7);border-radius:14px;padding:8px 12px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:500px;}
+.key-cap{background:var(--white);border:2px solid rgba(200,160,220,0.4);border-bottom:3px solid rgba(180,140,200,0.4);border-radius:7px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:var(--ink);transition:all 0.08s;}
+.key-cap.highlight{background:var(--pink);border-color:var(--pink-deep);border-bottom-color:var(--pink-deep);transform:scale(1.2);color:var(--ink);}
+.key-cap.pressed{transform:translateY(2px) scale(0.95);background:var(--lavender);border-bottom-width:1px;}
+
+/* FARM SCREEN */
+#screen-farm{flex-direction:column;min-height:100vh;padding:2rem;gap:1.5rem;align-items:center;}
+.farm-header{text-align:center;}
+.farm-header h2{font-size:2.2rem;font-weight:900;color:var(--ink);}
+.farm-header p{font-size:0.9rem;color:var(--ink-light);font-weight:600;}
+.farm-coins-bar{background:var(--yellow);border-radius:99px;padding:8px 24px;font-size:1.1rem;font-weight:900;color:#7A5500;display:inline-flex;align-items:center;gap:6px;}
+
+/* RARITY TABS */
+.rarity-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.rarity-tab{background:var(--white);border:2px solid rgba(200,160,220,0.3);border-radius:99px;padding:6px 18px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;color:var(--ink-light);cursor:pointer;transition:all 0.15s;}
+.rarity-tab:hover{background:var(--lavender);border-color:var(--lavender-dark);color:var(--ink);}
+.rarity-tab.active{color:var(--ink);}
+.rarity-tab.r-common.active{background:#E8F8E8;border-color:#5DDBA8;}
+.rarity-tab.r-uncommon.active{background:#E8EEFF;border-color:#9D85F5;}
+.rarity-tab.r-rare.active{background:#FFF0E8;border-color:#FFB07A;}
+.rarity-tab.r-legendary.active{background:#FFF0F8;border-color:var(--pink-deep);}
+
+/* FARM GRID */
+.farm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;width:100%;max-width:720px;}
+.farm-card{background:var(--white);border-radius:22px;padding:1.1rem 0.9rem;text-align:center;cursor:pointer;border:2.5px solid rgba(200,160,220,0.25);transition:all 0.2s;position:relative;overflow:hidden;}
+.farm-card:hover:not(.locked-hard){transform:translateY(-4px);box-shadow:0 8px 28px var(--shadow);}
+.farm-card.owned{border-color:var(--mint-dark);background:rgba(184,240,216,0.15);}
+.farm-card.cant-afford{opacity:0.6;cursor:not-allowed;}
+.farm-card.locked-hard{opacity:0.35;cursor:not-allowed;filter:grayscale(0.5);}
+
+/* rarity glow borders */
+.farm-card.r-common.owned{border-color:#5DDBA8;}
+.farm-card.r-uncommon.owned{border-color:#9D85F5;}
+.farm-card.r-rare.owned{border-color:var(--peach-dark);}
+.farm-card.r-legendary.owned{border-color:var(--pink-deep);background:rgba(255,183,213,0.12);}
+
+.farm-animal-emoji{font-size:2.6rem;line-height:1;margin-bottom:6px;display:block;}
+.farm-animal-name{font-size:0.8rem;font-weight:800;color:var(--ink);margin-bottom:5px;}
+.rarity-pill{display:inline-block;border-radius:99px;padding:2px 8px;font-size:0.65rem;font-weight:800;margin-bottom:5px;}
+.rarity-pill.r-common{background:#E8F8E8;color:#1A6A40;}
+.rarity-pill.r-uncommon{background:#EEEEFF;color:#4A35A0;}
+.rarity-pill.r-rare{background:#FFF0E0;color:#8A4A00;}
+.rarity-pill.r-legendary{background:#FFF0F8;color:var(--pink-deep);}
+.farm-price{display:inline-flex;align-items:center;gap:3px;background:var(--yellow);border-radius:99px;padding:2px 9px;font-size:0.75rem;font-weight:800;color:#7A5500;}
+.owned-stamp{position:absolute;top:8px;right:8px;background:var(--mint-dark);border-radius:99px;padding:2px 7px;font-size:0.62rem;font-weight:800;color:#085041;}
+.lock-icon{position:absolute;top:8px;left:8px;font-size:0.9rem;}
+
+/* NEW ANIMAL POPUP */
+.animal-popup{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.animal-popup-box{background:var(--white);border-radius:28px;padding:2rem 2.5rem;text-align:center;box-shadow:0 16px 64px rgba(180,140,200,0.35);border:3px solid var(--pink-dark);animation:popIn 0.4s ease;max-width:300px;}
+.animal-popup-emoji{font-size:4rem;line-height:1;margin-bottom:0.5rem;}
+.animal-popup-title{font-size:1.5rem;font-weight:900;color:var(--ink);margin-bottom:4px;}
+.animal-popup-sub{font-size:0.9rem;color:var(--ink-light);font-weight:600;}
+@keyframes popIn{from{transform:scale(0.3) rotate(-10deg);opacity:0;}60%{transform:scale(1.1) rotate(2deg);}to{transform:scale(1) rotate(0deg);opacity:1;}}
+
+/* COIN RAIN */
+.coin-rain{position:fixed;inset:0;pointer-events:none;z-index:999;}
+.coin-particle{position:absolute;font-size:1.5rem;animation:fall 1.2s ease-in forwards;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+
+/* OWNED COLLECTION MINI in sidebar */
+.mini-farm{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
+.mini-animal{font-size:1.1rem;line-height:1;}
+
+@media(max-width:640px){
+  .sidebar{width:70px;padding:0.75rem 0.5rem;}
+  .sidebar-logo,.player-badge h3,.player-badge .role,.coin-display span:first-child,.sparks-bubble{display:none;}
+  .nav-btn span:not(.icon){display:none;}
+  .nav-btn{justify-content:center;}
+  .coin-count{font-size:1rem;}
+  .main-area{padding:1rem 0.75rem;}
+  .doc-body{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- PROFILE -->
+<div id="screen-profile" class="screen active">
+  <div class="game-logo">
+    <h1>Type<span>Town</span> ✨</h1>
+    <p class="tagline">Just like dad's work — but cuter</p>
+  </div>
+  <div class="profile-cards">
+    <div class="profile-card lidia" onclick="selectProfile('lidia')">
+      <div class="profile-avatar">🦋</div>
+      <h2>Lidia</h2>
+      <p>Office Star ⭐</p>
+      <div class="coins-badge">🪙 <span id="lidia-coins-home">0</span> coins</div>
+    </div>
+    <div class="profile-card nerea" onclick="selectProfile('nerea')">
+      <div class="profile-avatar">🌸</div>
+      <h2>Nerea</h2>
+      <p>Junior Typist 🌟</p>
+      <div class="coins-badge">🪙 <span id="nerea-coins-home">0</span> coins</div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="screen-game" class="screen">
+  <div class="sidebar">
+    <div class="sidebar-logo">Type<span>Town</span></div>
+    <div class="player-badge">
+      <div class="avatar-sm" id="sidebar-avatar">🦋</div>
+      <h3 id="sidebar-name">Lidia</h3>
+      <div class="role" id="sidebar-role">Office Star</div>
+    </div>
+    <div class="coin-display">
+      <span>🪙 Coins</span>
+      <span class="coin-count" id="sidebar-coins">0</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <span class="progress-label" id="progress-label">0/5</span>
+    </div>
+    <div class="sparks-wrap">
+      <div class="sparks-face" id="sparks-face">😊</div>
+      <div class="sparks-bubble" id="sparks-msg">Hi! Ready to work? 💖</div>
+    </div>
+    <div class="mini-farm" id="mini-farm"></div>
+    <div class="sidebar-nav">
+      <button class="nav-btn active" id="nav-work" onclick="showWork()">
+        <span class="icon">📄</span><span>Work</span>
+      </button>
+      <button class="nav-btn" id="nav-farm" onclick="showFarm()">
+        <span class="icon">🐣</span><span>My Farm</span>
+      </button>
+      <button class="nav-btn" onclick="goHome()">
+        <span class="icon">🏠</span><span>Home</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="main-area" id="work-area">
+    <div class="task-header">
+      <span class="task-type-badge" id="task-badge">Letters</span>
+      <span class="task-title-text" id="task-title-text">Daily Report</span>
+      <button class="next-task-btn" onclick="nextTask()">Next task ➡</button>
+    </div>
+    <div class="doc-frame">
+      <div class="doc-toolbar">
+        <div class="doc-toolbar-dot" style="background:#FF7EB3"></div>
+        <div class="doc-toolbar-dot" style="background:#FFD43B"></div>
+        <div class="doc-toolbar-dot" style="background:#5DDBA8"></div>
+        <span class="doc-title-bar">Daily Report — TypeTown Office</span>
+        <span class="doc-status" id="doc-status">Editing...</span>
+      </div>
+      <div class="doc-body" id="doc-body"></div>
+    </div>
+    <div class="keyboard-hint" id="keyboard-hint"></div>
+  </div>
+</div>
+
+<!-- FARM -->
+<div id="screen-farm" class="screen">
+  <div class="farm-header">
+    <h2>🐣 My Kawaii Farm 🌸</h2>
+    <p>Collect all the animals — spend your coins to unlock them!</p>
+  </div>
+  <div class="farm-coins-bar">🪙 <span id="farm-coins-display">0</span> coins</div>
+  <div class="rarity-tabs">
+    <button class="rarity-tab r-common active" onclick="filterFarm('common',this)">🌿 Common</button>
+    <button class="rarity-tab r-uncommon" onclick="filterFarm('uncommon',this)">💜 Uncommon</button>
+    <button class="rarity-tab r-rare" onclick="filterFarm('rare',this)">🧡 Rare</button>
+    <button class="rarity-tab r-legendary" onclick="filterFarm('legendary',this)">✨ Legendary</button>
+  </div>
+  <div class="farm-grid" id="farm-grid"></div>
+  <button style="background:var(--white);border:2px solid rgba(200,160,220,0.4);border-radius:14px;padding:8px 20px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;color:var(--ink);cursor:pointer;margin-bottom:2rem;" onclick="leaveFarm()">← Back to work</button>
+</div>
+
+<div class="coin-rain" id="coin-rain"></div>
+<div class="animal-popup" id="animal-popup" style="display:none;"></div>
+
+<script>
+// ═══════════════ FARM ANIMALS DATA ═══════════════
+// Progressive pricing: common 5-15, uncommon 20-40, rare 50-80, legendary 100-200
+const ANIMALS = [
+  // COMMON (5-15 coins) — easy to get in first sessions
+  {id:'chick',    emoji:'🐥', name:'Baby Chick',    rarity:'common',    price:5},
+  {id:'rabbit',   emoji:'🐰', name:'Fluffy Bunny',  rarity:'common',    price:6},
+  {id:'duckling', emoji:'🐤', name:'Duckling',      rarity:'common',    price:7},
+  {id:'cat',      emoji:'🐱', name:'Kitten',        rarity:'common',    price:8},
+  {id:'hamster',  emoji:'🐹', name:'Hamster',       rarity:'common',    price:9},
+  {id:'dog',      emoji:'🐶', name:'Puppy',         rarity:'common',    price:10},
+  {id:'turtle',   emoji:'🐢', name:'Baby Turtle',   rarity:'common',    price:12},
+  {id:'snail',    emoji:'🐌', name:'Garden Snail',  rarity:'common',    price:14},
+  // UNCOMMON (20-40 coins) — a few sessions each
+  {id:'lamb',     emoji:'🐑', name:'Little Lamb',   rarity:'uncommon',  price:20},
+  {id:'piglet',   emoji:'🐷', name:'Piglet',        rarity:'uncommon',  price:22},
+  {id:'cow',      emoji:'🐮', name:'Spotty Cow',    rarity:'uncommon',  price:25},
+  {id:'frog',     emoji:'🐸', name:'Pond Frog',     rarity:'uncommon',  price:28},
+  {id:'hedgehog', emoji:'🦔', name:'Hedgehog',      rarity:'uncommon',  price:32},
+  {id:'owl',      emoji:'🦉', name:'Wise Owl',      rarity:'uncommon',  price:35},
+  {id:'fox',      emoji:'🦊', name:'Baby Fox',      rarity:'uncommon',  price:38},
+  {id:'deer',     emoji:'🦌', name:'Fawn',          rarity:'uncommon',  price:40},
+  // RARE (50-80 coins) — week+ of dedicated play
+  {id:'panda',    emoji:'🐼', name:'Panda Cub',     rarity:'rare',      price:50},
+  {id:'koala',    emoji:'🐨', name:'Koala',         rarity:'rare',      price:55},
+  {id:'penguin',  emoji:'🐧', name:'Penguin',       rarity:'rare',      price:60},
+  {id:'flamingo', emoji:'🦩', name:'Flamingo',      rarity:'rare',      price:65},
+  {id:'parrot',   emoji:'🦜', name:'Rainbow Parrot',rarity:'rare',      price:70},
+  {id:'swan',     emoji:'🦢', name:'White Swan',    rarity:'rare',      price:75},
+  {id:'otter',    emoji:'🦦', name:'Sea Otter',     rarity:'rare',      price:80},
+  // LEGENDARY (100-200 coins) — long-term goals
+  {id:'unicorn',  emoji:'🦄', name:'Unicorn',       rarity:'legendary', price:100},
+  {id:'dragon',   emoji:'🐲', name:'Baby Dragon',   rarity:'legendary', price:120},
+  {id:'phoenix',  emoji:'🦅', name:'Phoenix',       rarity:'legendary', price:150},
+  {id:'narwhal',  emoji:'🦄', name:'Narwhal',       rarity:'legendary', price:170},
+  {id:'axolotl',  emoji:'🦎', name:'Axolotl',       rarity:'legendary', price:200},
+];
+
+// which rarities are unlockable — legendary locks until 5 rare owned
+function rarityUnlocked(rarity, ownedIds) {
+  if (rarity === 'common' || rarity === 'uncommon') return true;
+  if (rarity === 'rare') return ownedIds.filter(id => ANIMALS.find(a=>a.id===id&&a.rarity==='uncommon')).length >= 3;
+  if (rarity === 'legendary') return ownedIds.filter(id => ANIMALS.find(a=>a.id===id&&a.rarity==='rare')).length >= 3;
+  return false;
+}
+
+const TASKS_LIDIA = [
+  {type:'letters',      badge:'Letters',     title:'Alphabet Section',  prompt:'Type this letter for your report:',    points:3},
+  {type:'spelling',     badge:'Spelling',    title:'Words Section',     prompt:'Spell this word for your report:',     points:5},
+  {type:'maths',        badge:'Maths',       title:'Numbers Section',   prompt:'Solve this sum for your report:',      points:6},
+  {type:'counting',     badge:'Counting',    title:'Counting Section',  prompt:'Count and type the total:',            points:4},
+  {type:'free',         badge:'Free Typing', title:'Notes Section',     prompt:'Write anything — your important notes:', points:2},
+];
+const TASKS_NEREA = [
+  {type:'letters_easy', badge:'Letters',     title:'Letter Fun',        prompt:'Press the big letter you see!',        points:2},
+  {type:'counting_easy',badge:'Counting',    title:'Counting Fun',      prompt:'How many? Type the number!',           points:3},
+  {type:'free',         badge:'Free Typing', title:'Fun Notes',         prompt:'Type anything — you are amazing!',     points:1},
+];
+
+const WORDS = ['cat','dog','sun','cup','hat','pen','bag','ant','egg','jam','log','map','net','owl','pin','red','big','run','sit','hop'];
+const EMOJIS_COUNT = ['🍎','⭐','🌸','🐱','🎈','🍦','🐥','💛','🦋','🌺','🍓','🌻'];
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const SPARKS_PRAISE = ['Amazing work! 🌟','You are SO smart! 💖','Brilliant! ⭐','Keep going superstar! 🦋','The office loves you! 🌸','Perfect! 🎉','Wow wow WOW! ✨','Outstanding! 🌈'];
+const SPARKS_ENCOURAGE = ['Oops! Try again superstar 💕','Almost! You can do it! 🌟','So close! Give it another go 🎀'];
+
+// ═══════════════ STATE ═══════════════
+let state = {
+  profile: null,
+  profiles: {
+    lidia: {coins:0, tasksCompleted:0, owned:[]},
+    nerea: {coins:0, tasksCompleted:0, owned:[]}
+  },
+  currentTask: null,
+  taskIndex: 0,
+  completedLines: [],
+  farmFilter: 'common'
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('typetown_v2');
+    if (s) state.profiles = JSON.parse(s).profiles || state.profiles;
+  } catch(e){}
+  document.getElementById('lidia-coins-home').textContent = state.profiles.lidia.coins;
+  document.getElementById('nerea-coins-home').textContent = state.profiles.nerea.coins;
+}
+function saveState() {
+  localStorage.setItem('typetown_v2', JSON.stringify({profiles: state.profiles}));
+}
+
+// ═══════════════ AUDIO ═══════════════
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+function playClick() {
+  try {
+    const ctx = getAudio();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'square';
+    o.frequency.setValueAtTime(600, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(200, ctx.currentTime+0.06);
+    g.gain.setValueAtTime(0.07, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.08);
+    o.start(); o.stop(ctx.currentTime+0.08);
+  } catch(e){}
+}
+function playSuccess() {
+  try {
+    const ctx = getAudio();
+    [523,659,784,1047].forEach((freq,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.type='sine';
+      o.frequency.setValueAtTime(freq,ctx.currentTime+i*0.1);
+      g.gain.setValueAtTime(0.14,ctx.currentTime+i*0.1);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.1+0.25);
+      o.start(ctx.currentTime+i*0.1);o.stop(ctx.currentTime+i*0.1+0.25);
+    });
+  } catch(e){}
+}
+function playWrong() {
+  try {
+    const ctx=getAudio();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.type='sawtooth';
+    o.frequency.setValueAtTime(180,ctx.currentTime);
+    g.gain.setValueAtTime(0.09,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);
+    o.start();o.stop(ctx.currentTime+0.3);
+  } catch(e){}
+}
+function playUnlock() {
+  try {
+    const ctx=getAudio();
+    [400,600,800,1000,1300,1600].forEach((freq,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.type='sine';
+      o.frequency.setValueAtTime(freq,ctx.currentTime+i*0.08);
+      g.gain.setValueAtTime(0.16,ctx.currentTime+i*0.08);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.08+0.3);
+      o.start(ctx.currentTime+i*0.08);o.stop(ctx.currentTime+i*0.08+0.35);
+    });
+  } catch(e){}
+}
+
+// ═══════════════ PROFILE ═══════════════
+function selectProfile(name) {
+  state.profile = name;
+  state.completedLines = [];
+  state.taskIndex = 0;
+  updateSidebar();
+  showScreen('game');
+  generateTask();
+  buildKeyboard();
+}
+function goHome() {
+  saveState();
+  showScreen('profile');
+  document.getElementById('lidia-coins-home').textContent = state.profiles.lidia.coins;
+  document.getElementById('nerea-coins-home').textContent = state.profiles.nerea.coins;
+}
+function updateSidebar() {
+  const p = state.profile, prof = state.profiles[p];
+  document.getElementById('sidebar-avatar').textContent = p==='lidia'?'🦋':'🌸';
+  document.getElementById('sidebar-name').textContent = p==='lidia'?'Lidia':'Nerea';
+  document.getElementById('sidebar-role').textContent = p==='lidia'?'Office Star':'Junior Typist';
+  document.getElementById('sidebar-coins').textContent = prof.coins;
+  const done = state.completedLines.length % 5;
+  document.getElementById('progress-fill').style.width=(done/5*100)+'%';
+  document.getElementById('progress-label').textContent=done+'/5';
+  // mini farm
+  const mf = document.getElementById('mini-farm');
+  mf.innerHTML = prof.owned.slice(-8).map(id=>{
+    const a = ANIMALS.find(x=>x.id===id);
+    return a ? `<span class="mini-animal" title="${a.name}">${a.emoji}</span>` : '';
+  }).join('');
+}
+
+// ═══════════════ TASKS ═══════════════
+function generateTask() {
+  const p = state.profile;
+  const list = p==='lidia' ? TASKS_LIDIA : TASKS_NEREA;
+  const def = list[state.taskIndex % list.length];
+  state.taskIndex++;
+  let task = {...def};
+
+  if (task.type==='letters'||task.type==='letters_easy') {
+    task.target = LETTERS[Math.floor(Math.random()*LETTERS.length)];
+    task.answer = task.target.toLowerCase();
+    highlightKey(task.target);
+  } else if (task.type==='spelling') {
+    task.target = WORDS[Math.floor(Math.random()*WORDS.length)].toUpperCase();
+    task.answer = task.target.toLowerCase();
+  } else if (task.type==='maths') {
+    const a=Math.floor(Math.random()*9)+1, b=Math.floor(Math.random()*9)+1;
+    const op = a>=b ? (Math.random()>0.5?'+':'-') : '+';
+    task.target = a+' '+op+' '+b+' = ?';
+    task.answer = String(op==='+'?a+b:a-b);
+  } else if (task.type==='counting'||task.type==='counting_easy') {
+    const count = Math.floor(Math.random()*(p==='lidia'?9:5))+1;
+    const emoji = EMOJIS_COUNT[Math.floor(Math.random()*EMOJIS_COUNT.length)];
+    task.countEmoji=emoji; task.countNum=count; task.answer=String(count);
+  }
+  state.currentTask = task;
+  renderTask(task);
+  setSparks('🤓', task.prompt);
+  document.getElementById('task-badge').textContent = task.badge;
+  document.getElementById('task-title-text').textContent = task.title;
+}
+
+function renderTask(task) {
+  const body = document.getElementById('doc-body');
+  const date = new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let html = `<div class="doc-report-title">📋 Daily Work Report — TypeTown Office<br><span style="font-size:0.75rem;color:var(--ink-light);font-family:'Nunito',sans-serif;">${date}</span></div>`;
+  state.completedLines.forEach(line=>{
+    html+=`<div class="doc-line"><span class="line-label">${line.label}</span><span class="line-answer correct">${line.value}</span><span style="color:#1A8A50;font-size:0.8rem;margin-left:4px;">✓</span></div>`;
+  });
+  html+=`<div class="task-zone" id="task-zone"><div class="task-prompt">${task.prompt}</div>`;
+  if (task.type==='letters'||task.type==='letters_easy') {
+    html+=`<div class="task-target">${task.target}</div>`;
+    html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="1" placeholder="?" autocomplete="off" autocorrect="off" spellcheck="false"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type==='spelling') {
+    html+=`<div class="task-target" style="font-size:1.4rem;letter-spacing:2px;">${task.target}</div>`;
+    html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="${task.answer.length}" placeholder="type it!" autocomplete="off" autocorrect="off" spellcheck="false"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type==='maths') {
+    html+=`<div class="task-target">${task.target}</div>`;
+    html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="3" placeholder="?" autocomplete="off" type="text" inputmode="numeric"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type==='counting'||task.type==='counting_easy') {
+    html+=`<div class="counting-objects">`;
+    for(let i=0;i<task.countNum;i++) html+=`<span class="count-obj" style="animation-delay:${i*0.06}s">${task.countEmoji}</span>`;
+    html+=`</div><div class="task-input-row"><input class="task-input" id="task-input" maxlength="2" placeholder="?" autocomplete="off" type="text" inputmode="numeric"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type==='free') {
+    html+=`<textarea class="free-typing-area" id="free-input" placeholder="Start typing your very important notes here..."></textarea>`;
+    html+=`<button class="submit-btn" onclick="submitFree()">Submit Report 📨</button>`;
+  }
+  html+=`</div>`;
+  body.innerHTML = html;
+  const inp = document.getElementById('task-input');
+  if (inp) {
+    inp.focus();
+    inp.addEventListener('keydown', e=>{ playClick(); if(e.key==='Enter') checkAnswer(); });
+    inp.addEventListener('input', ()=>{ if(task.type==='letters'||task.type==='letters_easy') highlightKey(inp.value.toUpperCase()); });
+  }
+  const free = document.getElementById('free-input');
+  if (free) { free.focus(); free.addEventListener('keydown', ()=>playClick()); }
+  document.getElementById('doc-status').textContent='Editing...';
+}
+
+// ═══════════════ ANSWER CHECK ═══════════════
+function checkAnswer() {
+  const inp = document.getElementById('task-input');
+  if (!inp) return;
+  if (inp.value.trim().toLowerCase()===state.currentTask.answer) onCorrect();
+  else onWrong(inp);
+}
+function submitFree() {
+  const ta = document.getElementById('free-input');
+  if (!ta||ta.value.trim().length<3) { setSparks('😄','Keep typing — write more! 💕'); return; }
+  onCorrect(true);
+}
+function onCorrect(isFree) {
+  const task = state.currentTask;
+  const prof = state.profiles[state.profile];
+  prof.coins += task.points;
+  prof.tasksCompleted++;
+  const val = isFree ? '...done! ✍️' : (document.getElementById('task-input')?document.getElementById('task-input').value.toUpperCase():'✓');
+  state.completedLines.push({label: task.badge+' — '+(task.target||'Notes'), value: val});
+  updateSidebar();
+  saveState();
+  playSuccess();
+  showCoinRain(task.points);
+  const praise = SPARKS_PRAISE[Math.floor(Math.random()*SPARKS_PRAISE.length)];
+  setSparks('🤩', praise+' +'+task.points+' coins! 🪙');
+  document.getElementById('doc-status').textContent='Saved ✓';
+  setTimeout(()=>{ generateTask(); updateSidebar(); }, 1300);
+}
+function onWrong(inp) {
+  playWrong();
+  inp.classList.add('shake');
+  setTimeout(()=>inp.classList.remove('shake'),400);
+  setSparks('😅', SPARKS_ENCOURAGE[Math.floor(Math.random()*SPARKS_ENCOURAGE.length)]);
+  inp.value=''; inp.focus();
+}
+function nextTask() { generateTask(); }
+
+// ═══════════════ MS SPARKS ═══════════════
+function setSparks(face, msg) {
+  document.getElementById('sparks-face').textContent=face;
+  document.getElementById('sparks-msg').textContent=msg;
+}
+
+// ═══════════════ COIN RAIN ═══════════════
+function showCoinRain(count) {
+  const rain = document.getElementById('coin-rain');
+  rain.innerHTML='';
+  const num = Math.min(count*3,18);
+  for(let i=0;i<num;i++) {
+    const c=document.createElement('span');
+    c.className='coin-particle';
+    c.textContent='🪙';
+    c.style.left=Math.random()*100+'vw';
+    c.style.animationDelay=Math.random()*0.5+'s';
+    rain.appendChild(c);
+  }
+  setTimeout(()=>rain.innerHTML='',2200);
+}
+
+// ═══════════════ KEYBOARD ═══════════════
+function buildKeyboard() {
+  const rows=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+  document.getElementById('keyboard-hint').innerHTML = rows.map(row=>
+    `<div style="display:flex;gap:4px;justify-content:center;width:100%;">`+
+    row.split('').map(k=>`<div class="key-cap" id="key-${k}">${k}</div>`).join('')+
+    `</div>`
+  ).join('');
+}
+function highlightKey(letter) {
+  document.querySelectorAll('.key-cap').forEach(k=>k.classList.remove('highlight'));
+  const el=document.getElementById('key-'+letter.toUpperCase());
+  if(el) el.classList.add('highlight');
+}
+document.addEventListener('keydown', e=>{
+  const el=document.getElementById('key-'+e.key.toUpperCase());
+  if(el){el.classList.add('pressed');setTimeout(()=>el.classList.remove('pressed'),100);}
+});
+
+// ═══════════════ FARM ═══════════════
+let farmFilter = 'common';
+
+function showFarm() {
+  document.getElementById('nav-work').classList.remove('active');
+  document.getElementById('nav-farm').classList.add('active');
+  showScreen('farm');
+  renderFarm();
+}
+function leaveFarm() {
+  document.getElementById('nav-farm').classList.remove('active');
+  document.getElementById('nav-work').classList.add('active');
+  showScreen('game');
+}
+function showWork() {
+  document.getElementById('nav-farm').classList.remove('active');
+  document.getElementById('nav-work').classList.add('active');
+  showScreen('game');
+}
+
+function filterFarm(rarity, btn) {
+  farmFilter = rarity;
+  document.querySelectorAll('.rarity-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderFarm();
+}
+
+function renderFarm() {
+  const prof = state.profiles[state.profile];
+  document.getElementById('farm-coins-display').textContent = prof.coins;
+  const items = ANIMALS.filter(a=>a.rarity===farmFilter);
+  const unlocked = rarityUnlocked(farmFilter, prof.owned);
+  const grid = document.getElementById('farm-grid');
+  grid.innerHTML = items.map(animal=>{
+    const owned = prof.owned.includes(animal.id);
+    const afford = prof.coins >= animal.price;
+    const hardLocked = !unlocked;
+    const rarityLabel = animal.rarity.charAt(0).toUpperCase()+animal.rarity.slice(1);
+    let lockMsg = '';
+    if (hardLocked) {
+      if (farmFilter==='rare') lockMsg='Unlock 3 uncommon animals first!';
+      if (farmFilter==='legendary') lockMsg='Unlock 3 rare animals first!';
+    }
+    return `<div class="farm-card r-${animal.rarity} ${owned?'owned':''} ${hardLocked?'locked-hard':(!afford&&!owned?'cant-afford':'')}"
+      onclick="${hardLocked?`setSparks('🔒','${lockMsg}')`:owned?`setSparks('😄','You already have ${animal.name}! 💖')`:`buyAnimal('${animal.id}')`}" >
+      ${owned?'<span class="owned-stamp">✓ mine</span>':''}
+      ${hardLocked?'<span class="lock-icon">🔒</span>':''}
+      <span class="farm-animal-emoji">${owned?animal.emoji:'❓'}</span>
+      <div class="farm-animal-name">${owned?animal.name:'???'}</div>
+      <div class="rarity-pill r-${animal.rarity}">${rarityLabel}</div><br>
+      <div class="farm-price">🪙 ${owned?'✓':animal.price}</div>
+    </div>`;
+  }).join('');
+  if (!unlocked) {
+    const lockMsg = farmFilter==='rare'?'Collect 3 uncommon animals to unlock Rare!':
+                    farmFilter==='legendary'?'Collect 3 rare animals to unlock Legendary!':'';
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ink-light);font-weight:700;font-size:0.95rem;">🔒 ${lockMsg}</div>` + grid.innerHTML;
+  }
+}
+
+function buyAnimal(id) {
+  const prof = state.profiles[state.profile];
+  const animal = ANIMALS.find(a=>a.id===id);
+  if (!animal) return;
+  if (prof.owned.includes(id)) { setSparks('😄',`You already have ${animal.name}! 💖`); return; }
+  if (!rarityUnlocked(animal.rarity, prof.owned)) return;
+  if (prof.coins < animal.price) {
+    setSparks('😅',`Need ${animal.price} coins for ${animal.name}! Keep working! 💕`);
+    return;
+  }
+  prof.coins -= animal.price;
+  prof.owned.push(id);
+  saveState();
+  playUnlock();
+  showAnimalPopup(animal);
+  updateSidebar();
+  setTimeout(renderFarm, 2200);
+}
+
+function showAnimalPopup(animal) {
+  const popup = document.getElementById('animal-popup');
+  popup.style.display='flex';
+  popup.innerHTML=`<div class="animal-popup-box">
+    <div class="animal-popup-emoji">${animal.emoji}</div>
+    <div class="animal-popup-title">${animal.name}!</div>
+    <div class="animal-popup-sub">🌟 New farm friend unlocked! 🌟</div>
+  </div>`;
+  // coin-like rain but with the animal emoji
+  const rain = document.getElementById('coin-rain');
+  rain.innerHTML='';
+  for(let i=0;i<16;i++){
+    const c=document.createElement('span');
+    c.className='coin-particle';
+    c.textContent=animal.emoji;
+    c.style.left=Math.random()*100+'vw';
+    c.style.animationDelay=Math.random()*0.6+'s';
+    c.style.fontSize='2rem';
+    rain.appendChild(c);
+  }
+  setTimeout(()=>{ popup.style.display='none'; rain.innerHTML=''; }, 2200);
+}
+
+// ═══════════════ SCREEN SWITCH ═══════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  if (name==='farm') {
+    document.getElementById('screen-farm').classList.add('active');
+  } else if (name==='game') {
+    document.getElementById('screen-game').classList.add('active');
+  } else if (name==='profile') {
+    document.getElementById('screen-profile').classList.add('active');
+  }
+}
+
+// ═══════════════ INIT ═══════════════
+loadState();
+</script>
+</body>
+</html>
