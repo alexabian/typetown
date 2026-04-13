@@ -533,8 +533,10 @@ function updateSidebar() {
 function generateTask() {
   const p = state.profile;
   const list = p==='lidia' ? TASKS_LIDIA : TASKS_NEREA;
-  const def = list[state.taskIndex % list.length];
-  state.taskIndex++;
+  // Random pick, never repeat the same type twice in a row
+  const lastType = state.currentTask ? state.currentTask.type : null;
+  const pool = list.length > 1 ? list.filter(t => t.type !== lastType) : list;
+  const def = pool[Math.floor(Math.random() * pool.length)];
   let task = {...def};
 
   if (task.type==='letters'||task.type==='letters_easy') {
@@ -645,6 +647,8 @@ const BREAK_MSGS = [
 ];
 
 function onCorrect(isFree) {
+  // Prevent double-submission during the transition delay
+  document.querySelectorAll('.task-input, .submit-btn, .free-typing-area').forEach(el => el.disabled = true);
   const task = state.currentTask;
   const prof = state.profiles[state.profile];
   prof.coins += task.points;
