@@ -193,7 +193,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 /* CLOCK */
 .clock-svg{display:block;margin:0.5rem auto;filter:drop-shadow(0 4px 12px rgba(180,140,200,0.3));}
-.clock-hint{font-size:0.8rem;color:var(--ink-light);font-weight:600;text-align:center;margin-top:4px;}
+.clock-choices{display:flex;gap:12px;justify-content:center;margin:0.75rem 0;flex-wrap:wrap;}
+.clock-choice-btn{background:var(--lavender);border:3px solid var(--lavender-dark);border-radius:16px;padding:12px 26px;font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:var(--ink);cursor:pointer;transition:all 0.15s;min-width:96px;}
+.clock-choice-btn:hover:not(:disabled){background:var(--pink);border-color:var(--pink-deep);transform:scale(1.08);}
+.clock-choice-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
 /* OWNED COLLECTION MINI in sidebar */
 .mini-farm{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
@@ -586,6 +589,16 @@ function generateTask() {
     task.clockHour=h; task.clockMin=m;
     task.answer = h+':'+(m===0?'00':'30');
     task.target = task.answer;
+    // Build 2 distinct distractors
+    const distractors = new Set();
+    while (distractors.size < 2) {
+      const dh = Math.floor(Math.random()*12)+1;
+      const dm = Math.random()>0.5 ? 0 : 30;
+      const d = dh+':'+(dm===0?'00':'30');
+      if (d !== task.answer) distractors.add(d);
+    }
+    // Shuffle choices so the correct answer isn't always first
+    task.choices = [task.answer, ...distractors].sort(()=>Math.random()-0.5);
   }
   state.currentTask = task;
   renderTask(task);
@@ -622,8 +635,11 @@ function renderTask(task) {
     html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="3" placeholder="?" autocomplete="off" type="text" inputmode="numeric"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
   } else if (task.type==='clock') {
     html+=makeClock(task.clockHour, task.clockMin);
-    html+=`<p class="clock-hint">Write the time like: <strong>3:00</strong> or <strong>7:30</strong></p>`;
-    html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="5" placeholder="?:??" autocomplete="off" spellcheck="false"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+    html+=`<div class="clock-choices">`;
+    task.choices.forEach(c => {
+      html+=`<button class="clock-choice-btn" onclick="checkClockChoice('${c}')">${c}</button>`;
+    });
+    html+=`</div>`;
   } else if (task.type==='free') {
     html+=`<textarea class="free-typing-area" id="free-input" placeholder="Start typing your very important notes here..."></textarea>`;
     html+=`<button class="submit-btn" onclick="submitFree()">Submit Report 📨</button>`;
@@ -642,6 +658,21 @@ function renderTask(task) {
 }
 
 // ═══════════════ ANSWER CHECK ═══════════════
+function checkClockChoice(chosen) {
+  if (chosen === state.currentTask.answer) {
+    onCorrect();
+  } else {
+    playWrong();
+    // Shake the tapped wrong button
+    document.querySelectorAll('.clock-choice-btn').forEach(btn => {
+      if (btn.textContent.trim() === chosen) {
+        btn.classList.add('shake');
+        setTimeout(()=>btn.classList.remove('shake'), 400);
+      }
+    });
+    setSparks('😅', SPARKS_ENCOURAGE[Math.floor(Math.random()*SPARKS_ENCOURAGE.length)]);
+  }
+}
 function checkAnswer() {
   const inp = document.getElementById('task-input');
   if (!inp) return;
@@ -663,7 +694,7 @@ const BREAK_MSGS = [
 
 function onCorrect(isFree) {
   // Prevent double-submission during the transition delay
-  document.querySelectorAll('.task-input, .submit-btn, .free-typing-area').forEach(el => el.disabled = true);
+  document.querySelectorAll('.task-input, .submit-btn, .free-typing-area, .clock-choice-btn').forEach(el => el.disabled = true);
   const task = state.currentTask;
   const prof = state.profiles[state.profile];
   prof.coins += task.points;
