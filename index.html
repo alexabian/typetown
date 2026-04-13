@@ -499,7 +499,7 @@ function playUnlock() {
 function selectProfile(name) {
   state.profile = name;
   state.completedLines = [];
-  state.taskIndex = 0;
+  state.taskQueue = [];
   state.sessionCorrect = 0;
   updateSidebar();
   showScreen('game');
@@ -530,13 +530,28 @@ function updateSidebar() {
 }
 
 // ═══════════════ TASKS ═══════════════
+function shuffleDeck(list) {
+  // Fisher-Yates shuffle
+  const a = [...list];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 function generateTask() {
   const p = state.profile;
   const list = p==='lidia' ? TASKS_LIDIA : TASKS_NEREA;
-  // Random pick, never repeat the same type twice in a row
-  const lastType = state.currentTask ? state.currentTask.type : null;
-  const pool = list.length > 1 ? list.filter(t => t.type !== lastType) : list;
-  const def = pool[Math.floor(Math.random() * pool.length)];
+  // Deck approach: exhaust every task type before repeating any
+  if (!state.taskQueue || state.taskQueue.length === 0) {
+    state.taskQueue = shuffleDeck(list);
+    // Avoid the new deck's first card matching the last played type
+    if (state.taskQueue.length > 1 && state.currentTask &&
+        state.taskQueue[0].type === state.currentTask.type) {
+      [state.taskQueue[0], state.taskQueue[1]] = [state.taskQueue[1], state.taskQueue[0]];
+    }
+  }
+  const def = state.taskQueue.shift();
   let task = {...def};
 
   if (task.type==='letters'||task.type==='letters_easy') {
