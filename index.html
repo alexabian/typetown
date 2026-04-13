@@ -175,6 +175,26 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .coin-particle{position:absolute;font-size:1.5rem;animation:fall 1.2s ease-in forwards;}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
 
+/* BREAK POPUP */
+.break-popup{position:fixed;inset:0;z-index:1001;display:flex;align-items:center;justify-content:center;background:rgba(255,240,248,0.88);backdrop-filter:blur(6px);}
+.break-popup-box{background:var(--white);border-radius:32px;padding:2.5rem 3rem;text-align:center;box-shadow:0 20px 80px rgba(180,140,200,0.45);border:3px solid var(--pink-dark);animation:popIn 0.4s ease;max-width:340px;}
+.break-emoji{font-size:4rem;line-height:1;margin-bottom:0.5rem;}
+.break-title{font-size:1.8rem;font-weight:900;color:var(--ink);margin-bottom:6px;}
+.break-sub{font-size:0.95rem;color:var(--ink-light);font-weight:600;margin-bottom:1rem;line-height:1.5;}
+.break-bonus{font-size:1.3rem;font-weight:900;color:#7A5500;background:var(--yellow);border-radius:99px;padding:8px 24px;display:inline-block;margin-bottom:1.5rem;}
+.break-continue-btn{background:var(--pink-dark);border:none;border-radius:16px;padding:12px 32px;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:white;cursor:pointer;transition:transform 0.15s;}
+.break-continue-btn:hover{transform:scale(1.05);}
+
+/* SEQUENCE DISPLAY */
+.sequence-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0.75rem 0;}
+.seq-num{background:var(--lavender);border-radius:12px;padding:8px 14px;font-size:1.5rem;font-weight:900;color:var(--ink);}
+.seq-arrow{font-size:1.2rem;color:var(--ink-light);font-weight:700;}
+.seq-blank{background:var(--white);border:3px dashed var(--lavender-dark);border-radius:12px;padding:8px 18px;font-size:1.5rem;font-weight:900;color:var(--lavender-dark);}
+
+/* CLOCK */
+.clock-svg{display:block;margin:0.5rem auto;filter:drop-shadow(0 4px 12px rgba(180,140,200,0.3));}
+.clock-hint{font-size:0.8rem;color:var(--ink-light);font-weight:600;text-align:center;margin-top:4px;}
+
 /* OWNED COLLECTION MINI in sidebar */
 .mini-farm{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
 .mini-animal{font-size:1.1rem;line-height:1;}
@@ -272,8 +292,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <!-- FARM -->
 <div id="screen-farm" class="screen">
   <div class="farm-header">
-    <h2>🐣 My Kawaii Farm 🌸</h2>
-    <p>Collect all the animals — spend your coins to unlock them!</p>
+    <h2>🌟 My Collection 🌸</h2>
+    <p>Collect animals, flowers, sweets, space & more — spend your coins!</p>
   </div>
   <div class="farm-coins-bar">🪙 <span id="farm-coins-display">0</span> coins</div>
   <div class="rarity-tabs">
@@ -288,6 +308,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 <div class="coin-rain" id="coin-rain"></div>
 <div class="animal-popup" id="animal-popup" style="display:none;"></div>
+<div class="break-popup" id="break-popup" style="display:none;"></div>
 
 <script>
 // ═══════════════ FARM ANIMALS DATA ═══════════════
@@ -325,6 +346,38 @@ const ANIMALS = [
   {id:'phoenix',  emoji:'🦅', name:'Phoenix',       rarity:'legendary', price:150},
   {id:'narwhal',  emoji:'🦄', name:'Narwhal',       rarity:'legendary', price:170},
   {id:'axolotl',  emoji:'🦎', name:'Axolotl',       rarity:'legendary', price:200},
+  // FLOWERS
+  {id:'sunflower', emoji:'🌻', name:'Sunflower',     rarity:'common',    price:8},
+  {id:'tulip',     emoji:'🌷', name:'Pink Tulip',    rarity:'common',    price:9},
+  {id:'daisy',     emoji:'🌼', name:'Daisy',         rarity:'common',    price:11},
+  {id:'rose',      emoji:'🌹', name:'Red Rose',      rarity:'uncommon',  price:24},
+  {id:'cherry',    emoji:'🌸', name:'Cherry Blossom',rarity:'uncommon',  price:30},
+  {id:'lotus',     emoji:'🪷', name:'Lotus Flower',  rarity:'rare',      price:58},
+  {id:'bouquet',   emoji:'💐', name:'Magic Bouquet', rarity:'legendary', price:115},
+  // SWEETS & FOOD
+  {id:'icecream',  emoji:'🍦', name:'Ice Cream',     rarity:'common',    price:7},
+  {id:'donut',     emoji:'🍩', name:'Sprinkle Donut',rarity:'common',    price:12},
+  {id:'lollipop',  emoji:'🍭', name:'Rainbow Lolly', rarity:'uncommon',  price:26},
+  {id:'cake',      emoji:'🎂', name:'Birthday Cake', rarity:'uncommon',  price:36},
+  {id:'cupcake',   emoji:'🧁', name:'Cupcake',       rarity:'rare',      price:62},
+  {id:'candy',     emoji:'🍬', name:'Candy Bag',     rarity:'rare',      price:67},
+  {id:'sweetbox',  emoji:'🍫', name:'Chocolate Box', rarity:'legendary', price:125},
+  // SPACE & MAGIC
+  {id:'star2',     emoji:'⭐', name:'Lucky Star',    rarity:'common',    price:6},
+  {id:'moon',      emoji:'🌙', name:'Crescent Moon', rarity:'uncommon',  price:22},
+  {id:'planet',    emoji:'🪐', name:'Saturn',        rarity:'rare',      price:72},
+  {id:'rocket',    emoji:'🚀', name:'Rocket Ship',   rarity:'rare',      price:78},
+  {id:'gem',       emoji:'💎', name:'Crystal Gem',   rarity:'legendary', price:110},
+  {id:'crown',     emoji:'👑', name:'Golden Crown',  rarity:'legendary', price:135},
+  {id:'shooting',  emoji:'🌠', name:'Shooting Star', rarity:'legendary', price:160},
+  // CUTE OBJECTS
+  {id:'rainbow2',  emoji:'🌈', name:'Rainbow',       rarity:'uncommon',  price:28},
+  {id:'balloon',   emoji:'🎈', name:'Party Balloon', rarity:'common',    price:5},
+  {id:'gift',      emoji:'🎁', name:'Mystery Gift',  rarity:'uncommon',  price:34},
+  {id:'ribbon',    emoji:'🎀', name:'Pink Ribbon',   rarity:'common',    price:10},
+  {id:'music',     emoji:'🎵', name:'Music Note',    rarity:'uncommon',  price:32},
+  {id:'trophy',    emoji:'🏆', name:'Gold Trophy',   rarity:'rare',      price:75},
+  {id:'magic',     emoji:'🪄', name:'Magic Wand',    rarity:'legendary', price:145},
 ];
 
 // which rarities are unlockable — legendary locks until 5 rare owned
@@ -336,11 +389,13 @@ function rarityUnlocked(rarity, ownedIds) {
 }
 
 const TASKS_LIDIA = [
-  {type:'letters',      badge:'Letters',     title:'Alphabet Section',  prompt:'Type this letter for your report:',    points:3},
-  {type:'spelling',     badge:'Spelling',    title:'Words Section',     prompt:'Spell this word for your report:',     points:5},
-  {type:'maths',        badge:'Maths',       title:'Numbers Section',   prompt:'Solve this sum for your report:',      points:6},
-  {type:'counting',     badge:'Counting',    title:'Counting Section',  prompt:'Count and type the total:',            points:4},
-  {type:'free',         badge:'Free Typing', title:'Notes Section',     prompt:'Write anything — your important notes:', points:2},
+  {type:'letters',    badge:'Letters',      title:'Alphabet Section',  prompt:'Type this letter for your report:',       points:3},
+  {type:'spelling',   badge:'Spelling',     title:'Words Section',     prompt:'Spell this word for your report:',        points:5},
+  {type:'count_by5',  badge:'Count by 5s',  title:'Number Patterns',   prompt:'Count by 5s — what number comes next?',   points:6},
+  {type:'count_by10', badge:'Count by 10s', title:'Number Patterns',   prompt:'Count by 10s — what number comes next?',  points:6},
+  {type:'clock',      badge:'Clock',        title:'Time Section',      prompt:'What time does the clock show?',          points:7},
+  {type:'counting',   badge:'Counting',     title:'Counting Section',  prompt:'Count and type the total:',               points:4},
+  {type:'free',       badge:'Free Typing',  title:'Notes Section',     prompt:'Write anything — your important notes:',  points:2},
 ];
 const TASKS_NEREA = [
   {type:'letters_easy', badge:'Letters',     title:'Letter Fun',        prompt:'Press the big letter you see!',        points:2},
@@ -349,7 +404,7 @@ const TASKS_NEREA = [
 ];
 
 const WORDS = ['cat','dog','sun','cup','hat','pen','bag','ant','egg','jam','log','map','net','owl','pin','red','big','run','sit','hop'];
-const EMOJIS_COUNT = ['🍎','⭐','🌸','🐱','🎈','🍦','🐥','💛','🦋','🌺','🍓','🌻'];
+const EMOJIS_COUNT = ['🍎','⭐','🌸','🐱','🎈','🍦','🐥','💛','🦋','🌺','🍓','🌻','🍩','🌙','🎀','🍭','🌈','🎊','🍋','🚀','🌷','🎁','🫐','🍄','🏠','🎵','🌍','🍰','🐝','🎸','🌮','🎃','🦄','💎','🧁','🌊','🪐','🍕','⚡','🎯','🌵','🦩','🍇','🎠','🌟'];
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const SPARKS_PRAISE = ['Amazing work! 🌟','You are SO smart! 💖','Brilliant! ⭐','Keep going superstar! 🦋','The office loves you! 🌸','Perfect! 🎉','Wow wow WOW! ✨','Outstanding! 🌈'];
 const SPARKS_ENCOURAGE = ['Oops! Try again superstar 💕','Almost! You can do it! 🌟','So close! Give it another go 🎀'];
@@ -364,7 +419,8 @@ let state = {
   currentTask: null,
   taskIndex: 0,
   completedLines: [],
-  farmFilter: 'common'
+  farmFilter: 'common',
+  sessionCorrect: 0
 };
 
 function loadState() {
@@ -444,6 +500,7 @@ function selectProfile(name) {
   state.profile = name;
   state.completedLines = [];
   state.taskIndex = 0;
+  state.sessionCorrect = 0;
   updateSidebar();
   showScreen('game');
   generateTask();
@@ -496,6 +553,22 @@ function generateTask() {
     const count = Math.floor(Math.random()*(p==='lidia'?9:5))+1;
     const emoji = EMOJIS_COUNT[Math.floor(Math.random()*EMOJIS_COUNT.length)];
     task.countEmoji=emoji; task.countNum=count; task.answer=String(count);
+  } else if (task.type==='count_by5') {
+    const start = (Math.floor(Math.random()*8)+1)*5;
+    task.sequence = [start, start+5, start+10, start+15];
+    task.target = task.sequence.join(', ')+', ...';
+    task.answer = String(start+20);
+  } else if (task.type==='count_by10') {
+    const start = (Math.floor(Math.random()*7)+1)*10;
+    task.sequence = [start, start+10, start+20];
+    task.target = task.sequence.join(', ')+', ...';
+    task.answer = String(start+30);
+  } else if (task.type==='clock') {
+    const h = Math.floor(Math.random()*12)+1;
+    const m = Math.random()>0.5 ? 0 : 30;
+    task.clockHour=h; task.clockMin=m;
+    task.answer = h+':'+(m===0?'00':'30');
+    task.target = task.answer;
   }
   state.currentTask = task;
   renderTask(task);
@@ -525,6 +598,15 @@ function renderTask(task) {
     html+=`<div class="counting-objects">`;
     for(let i=0;i<task.countNum;i++) html+=`<span class="count-obj" style="animation-delay:${i*0.06}s">${task.countEmoji}</span>`;
     html+=`</div><div class="task-input-row"><input class="task-input" id="task-input" maxlength="2" placeholder="?" autocomplete="off" type="text" inputmode="numeric"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type==='count_by5'||task.type==='count_by10') {
+    html+=`<div class="sequence-row">`;
+    task.sequence.forEach(n=>{ html+=`<span class="seq-num">${n}</span><span class="seq-arrow">→</span>`; });
+    html+=`<span class="seq-blank">?</span></div>`;
+    html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="3" placeholder="?" autocomplete="off" type="text" inputmode="numeric"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type==='clock') {
+    html+=makeClock(task.clockHour, task.clockMin);
+    html+=`<p class="clock-hint">Write the time like: <strong>3:00</strong> or <strong>7:30</strong></p>`;
+    html+=`<div class="task-input-row"><input class="task-input" id="task-input" maxlength="5" placeholder="?:??" autocomplete="off" spellcheck="false"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
   } else if (task.type==='free') {
     html+=`<textarea class="free-typing-area" id="free-input" placeholder="Start typing your very important notes here..."></textarea>`;
     html+=`<button class="submit-btn" onclick="submitFree()">Submit Report 📨</button>`;
@@ -554,11 +636,20 @@ function submitFree() {
   if (!ta||ta.value.trim().length<3) { setSparks('😄','Keep typing — write more! 💕'); return; }
   onCorrect(true);
 }
+const BREAK_MSGS = [
+  {emoji:'🌟', title:'5 in a row!',       sub:'You are unstoppable! Take a tiny breather ☕'},
+  {emoji:'🔥', title:"You're on fire!",    sub:'5 more done! Your brain deserves a rest 🧠💖'},
+  {emoji:'🎉', title:'Superstar moment!',  sub:'5 correct! Sparks is SO proud of you! 🦋✨'},
+  {emoji:'🌸', title:'Incredible work!',   sub:'Time for a mini break — you earned it! 💕'},
+  {emoji:'🏆', title:'Champion alert!',    sub:'Keep this up and you\'ll own the whole farm! 🐾'},
+];
+
 function onCorrect(isFree) {
   const task = state.currentTask;
   const prof = state.profiles[state.profile];
   prof.coins += task.points;
   prof.tasksCompleted++;
+  state.sessionCorrect++;
   const val = isFree ? '...done! ✍️' : (document.getElementById('task-input')?document.getElementById('task-input').value.toUpperCase():'✓');
   state.completedLines.push({label: task.badge+' — '+(task.target||'Notes'), value: val});
   updateSidebar();
@@ -568,7 +659,36 @@ function onCorrect(isFree) {
   const praise = SPARKS_PRAISE[Math.floor(Math.random()*SPARKS_PRAISE.length)];
   setSparks('🤩', praise+' +'+task.points+' coins! 🪙');
   document.getElementById('doc-status').textContent='Saved ✓';
-  setTimeout(()=>{ generateTask(); updateSidebar(); }, 1300);
+  if (state.sessionCorrect % 5 === 0) {
+    const bonus = state.sessionCorrect <= 5 ? 10 : state.sessionCorrect <= 10 ? 15 : 20;
+    prof.coins += bonus;
+    updateSidebar();
+    saveState();
+    setTimeout(()=> showBreak(state.sessionCorrect, bonus), 1500);
+  } else {
+    setTimeout(()=>{ generateTask(); updateSidebar(); }, 1300);
+  }
+}
+function showBreak(streak, bonus) {
+  const msg = BREAK_MSGS[Math.floor(Math.random()*BREAK_MSGS.length)];
+  const tier = streak >= 15 ? '🌈 MEGA' : streak >= 10 ? '💫 Super' : '🌟 Mini';
+  const popup = document.getElementById('break-popup');
+  popup.innerHTML = `<div class="break-popup-box">
+    <div class="break-emoji">${msg.emoji}</div>
+    <div class="break-title">${msg.title}</div>
+    <div class="break-sub">${msg.sub}</div>
+    <div class="break-bonus">🪙 +${bonus} bonus coins!</div>
+    <button class="break-continue-btn" onclick="continueAfterBreak()">Keep going! 💪</button>
+  </div>`;
+  popup.style.display = 'flex';
+  playUnlock();
+  showCoinRain(bonus);
+  setSparks('🤩', `${tier} Break! +${bonus} bonus coins! 🎉`);
+}
+function continueAfterBreak() {
+  document.getElementById('break-popup').style.display = 'none';
+  generateTask();
+  updateSidebar();
 }
 function onWrong(inp) {
   playWrong();
@@ -578,6 +698,33 @@ function onWrong(inp) {
   inp.value=''; inp.focus();
 }
 function nextTask() { generateTask(); }
+
+// ═══════════════ ANALOG CLOCK ═══════════════
+function makeClock(h, m) {
+  const cx=90, cy=90;
+  const hAngle=((h%12)+m/60)*30-90, mAngle=m*6-90;
+  const hRad=hAngle*Math.PI/180, mRad=mAngle*Math.PI/180;
+  const hx=(cx+46*Math.cos(hRad)).toFixed(1), hy=(cy+46*Math.sin(hRad)).toFixed(1);
+  const mx=(cx+64*Math.cos(mRad)).toFixed(1), my=(cy+64*Math.sin(mRad)).toFixed(1);
+  let nums='';
+  for(let i=1;i<=12;i++){
+    const a=(i*30-90)*Math.PI/180;
+    nums+=`<text x="${(cx+62*Math.cos(a)).toFixed(1)}" y="${(cy+62*Math.sin(a)).toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="11" font-family="Nunito,sans-serif" font-weight="800" fill="#3D2B4A">${i}</text>`;
+  }
+  let ticks='';
+  for(let i=0;i<60;i++){
+    const a=(i*6-90)*Math.PI/180, isH=i%5===0;
+    const r1=isH?72:76;
+    ticks+=`<line x1="${(cx+r1*Math.cos(a)).toFixed(1)}" y1="${(cy+r1*Math.sin(a)).toFixed(1)}" x2="${(cx+80*Math.cos(a)).toFixed(1)}" y2="${(cy+80*Math.sin(a)).toFixed(1)}" stroke="${isH?'#7A5A8A':'#C9B8FF'}" stroke-width="${isH?2:1}"/>`;
+  }
+  return `<svg class="clock-svg" width="180" height="180" viewBox="0 0 180 180">
+    <circle cx="${cx}" cy="${cy}" r="84" fill="#FFFCF7" stroke="#C9B8FF" stroke-width="3"/>
+    ${ticks}${nums}
+    <line x1="${cx}" y1="${cy}" x2="${hx}" y2="${hy}" stroke="#3D2B4A" stroke-width="6" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${mx}" y2="${my}" stroke="#FF85B3" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="5" fill="#3D2B4A"/>
+  </svg>`;
+}
 
 // ═══════════════ MS SPARKS ═══════════════
 function setSparks(face, msg) {
