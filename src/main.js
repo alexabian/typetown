@@ -26,6 +26,7 @@ refreshHomeCoins(state.profiles);
 attachKeyboardPressListener();
 
 const updateSidebar = () => renderSidebar(state, ANIMALS);
+let game;
 
 const taskEngine = createTaskEngine({
   state,
@@ -52,7 +53,7 @@ const farm = createFarm({
   showCoinRain,
 });
 
-const game = createGame({
+game = createGame({
   state,
   saveState,
   refreshHomeCoins,
@@ -76,6 +77,7 @@ Object.assign(window, {
   filterFarm: farm.filterFarm,
   nextTask: game.nextTask,
   checkAnswer: game.checkAnswer,
+  checkChoice: game.checkChoice,
   submitFree: game.submitFree,
   continueAfterBreak: game.continueAfterBreak,
   checkClockChoice: game.checkClockChoice,

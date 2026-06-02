@@ -12,7 +12,25 @@ export const state = {
   farmFilter: 'common',
   sessionCorrect: 0,
   taskQueue: [],
+  recentTaskKeys: [],
+  recentTaskTypes: [],
 };
+
+export function pushRecentTask(task) {
+  const key = task.memoryKey || `${task.type}:${task.target || task.answer || task.prompt}`;
+  state.recentTaskKeys.unshift(key);
+  state.recentTaskTypes.unshift(task.type);
+  state.recentTaskKeys = state.recentTaskKeys.slice(0, 6);
+  state.recentTaskTypes = state.recentTaskTypes.slice(0, 4);
+}
+
+export function resetSessionState() {
+  state.completedLines = [];
+  state.taskQueue = [];
+  state.sessionCorrect = 0;
+  state.recentTaskKeys = [];
+  state.recentTaskTypes = [];
+}
 
 export function loadState() {
   try {

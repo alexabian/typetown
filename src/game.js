@@ -1,11 +1,14 @@
-import { ANIMALS, BREAK_MSGS, SPARKS_ENCOURAGE, SPARKS_PRAISE } from './data.js';
+import { BREAK_MSGS, SPARKS_ENCOURAGE, SPARKS_PRAISE } from './data.js';
+import { resetSessionState } from './state.js';
+
+function normalizeAnswer(value) {
+  return String(value).trim().toLowerCase();
+}
 
 export function createGame({ state, saveState, refreshHomeCoins, showScreen, updateSidebar, buildKeyboard, generateTask, setSparks, playSuccess, playWrong, playUnlock, showCoinRain }) {
   function selectProfile(name) {
     state.profile = name;
-    state.completedLines = [];
-    state.taskQueue = [];
-    state.sessionCorrect = 0;
+    resetSessionState();
     updateSidebar();
     showScreen('game');
     generateTask();
@@ -18,13 +21,13 @@ export function createGame({ state, saveState, refreshHomeCoins, showScreen, upd
     refreshHomeCoins(state.profiles);
   }
 
-  function checkClockChoice(chosen) {
-    if (chosen === state.currentTask.answer) {
+  function checkChoice(chosen) {
+    if (normalizeAnswer(chosen) === normalizeAnswer(state.currentTask.answer)) {
       onCorrect();
     } else {
       playWrong();
-      document.querySelectorAll('.clock-choice-btn').forEach((btn) => {
-        if (btn.textContent.trim() === chosen) {
+      document.querySelectorAll('.task-choice-btn, .clock-choice-btn').forEach((btn) => {
+        if (normalizeAnswer(btn.textContent) === normalizeAnswer(chosen)) {
           btn.classList.add('shake');
           setTimeout(() => btn.classList.remove('shake'), 400);
         }
@@ -33,10 +36,14 @@ export function createGame({ state, saveState, refreshHomeCoins, showScreen, upd
     }
   }
 
+  function checkClockChoice(chosen) {
+    checkChoice(chosen);
+  }
+
   function checkAnswer() {
     const inp = document.getElementById('task-input');
     if (!inp) return;
-    if (inp.value.trim().toLowerCase() === state.currentTask.answer) onCorrect();
+    if (normalizeAnswer(inp.value) === normalizeAnswer(state.currentTask.answer)) onCorrect();
     else onWrong(inp);
   }
 
@@ -49,8 +56,17 @@ export function createGame({ state, saveState, refreshHomeCoins, showScreen, upd
     onCorrect(true);
   }
 
+  function getCompletionText(task, isFree) {
+    if (isFree) return '...done! ✍️';
+    const input = document.getElementById('task-input');
+    if (input) return input.value.toUpperCase();
+    if (task.type === 'counting' || task.type === 'counting_easy') return String(task.answer);
+    if (task.type.includes('choice') || task.choices) return String(task.answer).toUpperCase();
+    return '✓';
+  }
+
   function onCorrect(isFree = false) {
-    document.querySelectorAll('.task-input, .submit-btn, .free-typing-area, .clock-choice-btn').forEach((el) => {
+    document.querySelectorAll('.task-input, .submit-btn, .free-typing-area, .clock-choice-btn, .task-choice-btn').forEach((el) => {
       el.disabled = true;
     });
     const task = state.currentTask;
@@ -58,18 +74,16 @@ export function createGame({ state, saveState, refreshHomeCoins, showScreen, upd
     prof.coins += task.points;
     prof.tasksCompleted++;
     state.sessionCorrect++;
-    const val = isFree
-      ? '...done! ✍️'
-      : document.getElementById('task-input')
-        ? document.getElementById('task-input').value.toUpperCase()
-        : '✓';
-    state.completedLines.push({ label: task.badge + ' — ' + (task.target || 'Notes'), value: val });
+    state.completedLines.push({
+      label: task.badge + ' — ' + (task.target || task.wordPreview || 'Notes'),
+      value: getCompletionText(task, isFree),
+    });
     updateSidebar();
     saveState();
     playSuccess();
     showCoinRain(task.points);
     const praise = SPARKS_PRAISE[Math.floor(Math.random() * SPARKS_PRAISE.length)];
-    setSparks('🤩', praise + ' +' + task.points + ' coins! 🪙');
+    setSparks('🤩', `${praise} +${task.points} coins! 🪙`);
     document.getElementById('doc-status').textContent = 'Saved ✓';
     if (state.sessionCorrect % 5 === 0) {
       const bonus = state.sessionCorrect <= 5 ? 10 : state.sessionCorrect <= 10 ? 15 : 20;
@@ -124,6 +138,7 @@ export function createGame({ state, saveState, refreshHomeCoins, showScreen, upd
   return {
     selectProfile,
     goHome,
+    checkChoice,
     checkClockChoice,
     checkAnswer,
     submitFree,
