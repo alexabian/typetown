@@ -1,3 +1,5 @@
+import { MODE_OPTIONS } from './data.js';
+
 export function showScreen(name) {
   document.querySelectorAll('.screen').forEach((screen) => screen.classList.remove('active'));
   if (name === 'farm') {
@@ -109,6 +111,65 @@ function getLevelInfo(profileName, tasksCompleted) {
   return { label: 'Tiny Starter', level: 1 };
 }
 
+function getHelperSummary(owned) {
+  const powers = [];
+  if (owned.includes('fox')) powers.push('🦊 Fox gives +1 coin on word jobs');
+  if (owned.includes('panda')) powers.push('🐼 Panda makes break bonuses bigger');
+  if (owned.includes('owl')) powers.push('🦉 Owl offers one smart hint');
+  if (owned.includes('unicorn')) powers.push('🦄 Unicorn boosts surprise events');
+  if (!powers.length) return 'Collect helpers in the farm to unlock little powers.';
+  return powers.slice(0, 2).join(' · ');
+}
+
+function renderModePicker(state) {
+  const holder = document.getElementById('mode-picker');
+  if (!holder) return;
+  holder.innerHTML = MODE_OPTIONS.map((mode) => `<button class="mode-btn ${state.mode === mode.id ? 'active' : ''}" onclick="setMode('${mode.id}')">${mode.label}</button>`).join('');
+}
+
+function renderQuestList(state) {
+  const holder = document.getElementById('quest-list');
+  if (!holder) return;
+  holder.innerHTML = state.quests
+    .map(
+      (quest) => `<div class="quest-item ${quest.done ? 'done' : ''}">
+        <div class="quest-copy">${quest.label}</div>
+        <div class="quest-meta">${quest.progress}/${quest.goal} · 🪙 ${quest.reward}</div>
+      </div>`,
+    )
+    .join('');
+}
+
+function renderStatusChips(state) {
+  const helper = document.getElementById('helper-power');
+  if (helper && state.profile) {
+    helper.textContent = getHelperSummary(state.profiles[state.profile].owned);
+  }
+
+  const eventChip = document.getElementById('event-chip');
+  if (eventChip) {
+    const event = state.pendingEvent || state.activeTaskEvent;
+    if (event) {
+      eventChip.style.display = 'block';
+      eventChip.textContent = `${event.face || '✨'} ${event.title}`;
+    } else {
+      eventChip.style.display = 'none';
+      eventChip.textContent = '';
+    }
+  }
+
+  const bossChip = document.getElementById('boss-chip');
+  if (bossChip) {
+    if (state.activeBoss) {
+      bossChip.style.display = 'block';
+      bossChip.textContent = `👑 ${state.activeBoss.title} · ${state.activeBoss.remaining} left`;
+    } else {
+      bossChip.style.display = 'none';
+      bossChip.textContent = '';
+    }
+  }
+}
+
 export function refreshHomeCoins(profiles) {
   document.getElementById('lidia-coins-home').textContent = profiles.lidia.coins;
   document.getElementById('nerea-coins-home').textContent = profiles.nerea.coins;
@@ -134,6 +195,9 @@ export function updateSidebar(state, animals) {
       return a ? `<span class="mini-animal" title="${a.name}">${a.emoji}</span>` : '';
     })
     .join('');
+  renderModePicker(state);
+  renderQuestList(state);
+  renderStatusChips(state);
 }
 
 function renderChoiceButtons(choices, buttonClass = 'task-choice-btn', handlerName = 'checkChoice') {
@@ -146,6 +210,13 @@ function renderPattern(task) {
   return `<div class="pattern-row">${task.pattern
     .map((item) => `<span class="pattern-chip">${item}</span>`)
     .join('<span class="seq-arrow">→</span>')}<span class="seq-arrow">→</span><span class="pattern-chip missing">?</span></div>`;
+}
+
+function renderTenFrame(task) {
+  return `<div class="ten-frame-wrap"><div class="ten-frame-equation"><span class="ten-num filled">${task.friendNumber}</span><span class="ten-plus">+</span><span class="ten-num missing">?</span><span class="ten-plus">=</span><span class="ten-num total">10</span></div><div class="ten-frame-grid">${Array.from({ length: 10 }, (_, index) => {
+    const filled = index < task.friendNumber;
+    return `<span class="ten-cell${filled ? ' filled' : ''}">${filled ? '●' : '○'}</span>`;
+  }).join('')}</div></div>`;
 }
 
 export function renderTask(task, state, handlers, helpers) {
@@ -197,17 +268,20 @@ export function renderTask(task, state, handlers, helpers) {
   } else if (task.type === 'compare_numbers' || task.type === 'bigger_number_easy') {
     html += `<div class="task-target" style="letter-spacing:1px;">${task.target}</div>`;
     html += renderChoiceButtons(task.choices);
+  } else if (task.type === 'friends_of_ten') {
+    html += renderTenFrame(task);
+    html += `<div class="task-input-row"><input class="task-input" id="task-input" maxlength="2" placeholder="?" autocomplete="off" type="text" inputmode="numeric"><button class="submit-btn" onclick="checkAnswer()">Send ✉️</button></div>`;
+  } else if (task.type === 'friends_of_ten_easy') {
+    html += renderTenFrame(task);
+    html += renderChoiceButtons(task.choices);
   } else if (task.type === 'addition_choice' || task.type === 'subtraction_choice') {
     html += `<div class="task-target">${task.target}</div>`;
     html += renderChoiceButtons(task.choices);
   } else if (task.type === 'missing_number') {
     html += `<div class="sequence-row">`;
     task.sequence.forEach((n, index) => {
-      if (index === task.missingIndex) {
-        html += `<span class="seq-blank">?</span>`;
-      } else {
-        html += `<span class="seq-num">${n}</span>`;
-      }
+      if (index === task.missingIndex) html += `<span class="seq-blank">?</span>`;
+      else html += `<span class="seq-num">${n}</span>`;
       if (index !== task.sequence.length - 1) html += `<span class="seq-arrow">→</span>`;
     });
     html += `</div>`;

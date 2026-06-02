@@ -70,6 +70,7 @@ export const TASKS_LIDIA = [
   { type: 'before_letter', badge: 'ABC Logic', title: 'Letter Detective', prompt: 'Which letter comes right before this one?', points: 5, minCompleted: 4 },
   { type: 'after_letter', badge: 'ABC Logic', title: 'Letter Detective', prompt: 'Which letter comes right after this one?', points: 5, minCompleted: 4 },
   { type: 'compare_numbers', badge: 'Compare', title: 'Number Check', prompt: 'Which number is bigger?', points: 6, minCompleted: 6 },
+  { type: 'friends_of_ten', badge: 'Make 10', title: 'Friends of 10', prompt: 'Find the missing friend to make 10!', points: 7, minCompleted: 7 },
   { type: 'addition_choice', badge: 'Maths', title: 'Mini Maths', prompt: 'Solve the sum and choose the answer:', points: 7, minCompleted: 8 },
   { type: 'subtraction_choice', badge: 'Maths', title: 'Mini Maths', prompt: 'Solve the subtraction and choose the answer:', points: 7, minCompleted: 8 },
   { type: 'missing_number', badge: 'Patterns', title: 'Missing Number', prompt: 'Which number is missing from the pattern?', points: 7, minCompleted: 10 },
@@ -83,9 +84,37 @@ export const TASKS_NEREA = [
   { type: 'counting_easy', badge: 'Counting', title: 'Counting Fun', prompt: 'How many? Type the number!', points: 3 },
   { type: 'free', badge: 'Free Typing', title: 'Fun Notes', prompt: 'Type anything — you are amazing!', points: 1 },
   { type: 'letter_match', badge: 'Letter Match', title: 'Match Game', prompt: 'Tap the matching lowercase letter!', points: 3, minCompleted: 3 },
+  { type: 'friends_of_ten_easy', badge: 'Make 10', title: 'Friends of 10', prompt: 'Which number goes with it to make 10?', points: 4, minCompleted: 4 },
   { type: 'bigger_number_easy', badge: 'Bigger Number', title: 'Number Fun', prompt: 'Which number is bigger?', points: 4, minCompleted: 5 },
   { type: 'emoji_pattern_easy', badge: 'Pattern Fun', title: 'Sticker Line', prompt: 'Which sticker comes next?', points: 4, minCompleted: 7 },
   { type: 'same_first_letter', badge: 'Word Match', title: 'Sound Start', prompt: 'Which word starts with this letter?', points: 4, minCompleted: 9 },
+];
+
+export const MODE_OPTIONS = [
+  { id: 'mixed', label: '🌈 Mixed' },
+  { id: 'math', label: '🔢 Maths' },
+  { id: 'words', label: '🔤 Words' },
+  { id: 'patterns', label: '🧩 Puzzles' },
+];
+
+export const QUEST_LIBRARY = {
+  lidia: [
+    { kind: 'badge', target: 'Make 10', goal: 2, reward: 10, label: 'Help two numbers make 10' },
+    { kind: 'category', target: 'math', goal: 3, reward: 12, label: 'Finish 3 maths jobs' },
+    { kind: 'count', goal: 6, reward: 14, label: 'Complete 6 tasks today' },
+  ],
+  nerea: [
+    { kind: 'badge', target: 'Make 10', goal: 2, reward: 8, label: 'Find 2 friends of 10' },
+    { kind: 'category', target: 'patterns', goal: 2, reward: 9, label: 'Solve 2 puzzle jobs' },
+    { kind: 'count', goal: 5, reward: 10, label: 'Complete 5 tasks today' },
+  ],
+};
+
+export const SURPRISE_EVENTS = [
+  { type: 'double-coins', title: 'Golden Envelope', face: '💌', message: 'Next task gives double coins!' },
+  { type: 'math-party', title: 'Number Parade', face: '🎈', message: 'Next job will be a maths mission!' },
+  { type: 'word-party', title: 'Story Desk', face: '📚', message: 'Next job will be a word mission!' },
+  { type: 'pattern-party', title: 'Puzzle Party', face: '🧩', message: 'Next job will be a puzzle mission!' },
 ];
 
 export const WORDS = ['cat', 'dog', 'sun', 'cup', 'hat', 'pen', 'bag', 'ant', 'egg', 'jam', 'log', 'map', 'net', 'owl', 'pin', 'red', 'big', 'run', 'sit', 'hop'];
@@ -111,6 +140,14 @@ export const PATTERN_SETS = [
 ];
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 export const VOWELS = ['A', 'E', 'I', 'O', 'U'];
+export const FRIENDS_OF_TEN_PROMPTS = [
+  (n) => `${n}! What number makes 10?`,
+  (n) => `What goes with ${n} to make 10?`,
+  (n) => `What makes 10 with ${n}?`,
+  (n) => `Find the friend of ${n}!`,
+  (n) => `${n} and what make 10?`,
+  (n) => `What's the missing number if ${n} and ? make 10?`,
+];
 export const SPARKS_PRAISE = ['Amazing work! 🌟', 'You are SO smart! 💖', 'Brilliant! ⭐', 'Keep going superstar! 🦋', 'The office loves you! 🌸', 'Perfect! 🎉', 'Wow wow WOW! ✨', 'Outstanding! 🌈'];
 export const SPARKS_ENCOURAGE = ['Oops! Try again superstar 💕', 'Almost! You can do it! 🌟', 'So close! Give it another go 🎀'];
 export const BREAK_MSGS = [

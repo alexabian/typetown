@@ -14,6 +14,12 @@ export const state = {
   taskQueue: [],
   recentTaskKeys: [],
   recentTaskTypes: [],
+  mode: 'mixed',
+  quests: [],
+  pendingEvent: null,
+  activeTaskEvent: null,
+  activeBoss: null,
+  shieldHintUsed: false,
 };
 
 export function pushRecentTask(task) {
@@ -30,6 +36,12 @@ export function resetSessionState() {
   state.sessionCorrect = 0;
   state.recentTaskKeys = [];
   state.recentTaskTypes = [];
+  state.mode = 'mixed';
+  state.quests = [];
+  state.pendingEvent = null;
+  state.activeTaskEvent = null;
+  state.activeBoss = null;
+  state.shieldHintUsed = false;
 }
 
 export function loadState() {

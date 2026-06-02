@@ -76,6 +76,7 @@ Object.assign(window, {
   leaveFarm: farm.leaveFarm,
   filterFarm: farm.filterFarm,
   nextTask: game.nextTask,
+  setMode: game.setMode,
   checkAnswer: game.checkAnswer,
   checkChoice: game.checkChoice,
   submitFree: game.submitFree,

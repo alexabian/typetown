@@ -44,7 +44,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 /* GAME LAYOUT */
 #screen-game{flex-direction:row;min-height:100vh;align-items:stretch;}
-.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:2px solid rgba(255,183,213,0.4);padding:1.25rem 1rem;display:flex;flex-direction:column;gap:1rem;position:relative;z-index:2;}
+.sidebar{width:260px;flex-shrink:0;background:var(--white);border-right:2px solid rgba(255,183,213,0.4);padding:1.1rem 0.9rem;display:flex;flex-direction:column;gap:0.9rem;position:relative;z-index:2;overflow-y:auto;}
 .sidebar-logo{font-size:1.2rem;font-weight:900;color:var(--ink);text-align:center;letter-spacing:-0.5px;}
 .sidebar-logo span{color:var(--pink-deep);}
 .player-badge{background:var(--cream);border-radius:16px;padding:0.75rem;text-align:center;}
@@ -105,6 +105,23 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .progress-bar{flex:1;height:8px;background:rgba(200,160,220,0.2);border-radius:99px;overflow:hidden;}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--pink-dark),var(--lavender-dark));border-radius:99px;transition:width 0.4s ease;}
 .progress-label{font-size:0.72rem;color:var(--ink-light);font-weight:700;}
+
+/* SIDEBAR SYSTEMS */
+.sidebar-mini-title{font-size:0.72rem;color:var(--ink-light);font-weight:800;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.4rem;}
+.mode-panel,.quest-panel,.helper-panel{background:var(--cream);border-radius:16px;padding:0.75rem;border:1px solid rgba(200,160,220,0.18);}
+.mode-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.mode-btn{background:var(--white);border:2px solid rgba(200,160,220,0.28);border-radius:12px;padding:8px 10px;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:800;color:var(--ink);cursor:pointer;transition:all 0.15s;}
+.mode-btn:hover{transform:translateY(-1px);border-color:var(--pink-dark);background:rgba(255,183,213,0.22);}
+.mode-btn.active{background:var(--lavender);border-color:var(--lavender-dark);color:#2d226a;}
+.quest-list{display:flex;flex-direction:column;gap:8px;}
+.quest-item{background:var(--white);border-radius:12px;padding:8px 10px;border:2px dashed rgba(200,160,220,0.28);}
+.quest-item.done{background:rgba(184,240,216,0.25);border-style:solid;border-color:var(--mint-dark);}
+.quest-copy{font-size:0.8rem;font-weight:800;color:var(--ink);line-height:1.25;}
+.quest-meta{font-size:0.7rem;color:var(--ink-light);font-weight:700;margin-top:2px;}
+.helper-power{font-size:0.78rem;color:var(--ink);font-weight:700;line-height:1.45;}
+.event-chip,.boss-chip{margin-top:0.55rem;border-radius:999px;padding:6px 10px;font-size:0.73rem;font-weight:900;display:inline-flex;align-items:center;gap:6px;}
+.event-chip{background:#fff0d2;color:#7A5500;}
+.boss-chip{background:#f4e9ff;color:#5635a0;}
 
 /* KEYBOARD */
 .keyboard-hint{background:rgba(255,255,255,0.7);border-radius:14px;padding:8px 12px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:500px;}
@@ -195,6 +212,16 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .pattern-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;margin:0.75rem 0;}
 .pattern-chip{background:var(--white);border:2.5px solid var(--lavender-dark);border-radius:16px;padding:10px 16px;font-size:1.9rem;line-height:1;box-shadow:0 2px 8px rgba(180,140,200,0.14);}
 .pattern-chip.missing{border-style:dashed;color:var(--lavender-dark);}
+.ten-frame-wrap{display:flex;flex-direction:column;gap:12px;align-items:center;margin:0.5rem 0 0.25rem;}
+.ten-frame-equation{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--ink);font-size:clamp(1.4rem,5vw,2.3rem);}
+.ten-num{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:52px;border-radius:16px;border:3px solid var(--lavender-dark);background:var(--white);}
+.ten-num.filled{background:var(--pink);border-color:var(--pink-deep);}
+.ten-num.missing{border-style:dashed;color:var(--lavender-dark);}
+.ten-num.total{background:var(--lavender);}
+.ten-plus{font-size:1.5rem;color:var(--ink-light);}
+.ten-frame-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:250px;}
+.ten-cell{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;border:2px solid #d7c3ef;background:#fff7fb;color:#c4aedf;font-size:1.25rem;font-weight:900;}
+.ten-cell.filled{background:#ffd5e8;border-color:var(--pink-deep);color:var(--pink-deep);}
 
 /* OWNED COLLECTION MINI in sidebar */
 .mini-farm{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
@@ -202,7 +229,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 @media(max-width:640px){
   .sidebar{width:70px;padding:0.75rem 0.5rem;}
-  .sidebar-logo,.player-badge h3,.player-badge .role,.coin-display span:first-child,.sparks-bubble{display:none;}
+  .sidebar-logo,.player-badge h3,.player-badge .role,.coin-display span:first-child,.sparks-bubble,.sidebar-mini-title,.helper-power,.quest-meta,.quest-copy{display:none;}
+  .mode-panel,.quest-panel,.helper-panel{padding:0.45rem;}
+  .mode-picker{grid-template-columns:1fr;}
+  .mode-btn{padding:6px;font-size:0.72rem;}
   .nav-btn span:not(.icon){display:none;}
   .nav-btn{justify-content:center;}
   .coin-count{font-size:1rem;}

@@ -1,6 +1,7 @@
 import {
   EASY_WORDS,
   EMOJIS_COUNT,
+  FRIENDS_OF_TEN_PROMPTS,
   LETTERS,
   PATTERN_SETS,
   TASKS_LIDIA,
@@ -10,6 +11,37 @@ import {
   WORDS,
 } from './data.js';
 import { pushRecentTask } from './state.js';
+
+const CATEGORY_MAP = {
+  letters: 'words',
+  letters_easy: 'words',
+  letter_match: 'words',
+  spelling: 'words',
+  word_scramble: 'words',
+  same_first_letter: 'words',
+  before_letter: 'words',
+  after_letter: 'words',
+  vowel_choice: 'words',
+  counting: 'math',
+  counting_easy: 'math',
+  count_by5: 'patterns',
+  count_by10: 'patterns',
+  compare_numbers: 'math',
+  bigger_number_easy: 'math',
+  friends_of_ten: 'math',
+  friends_of_ten_easy: 'math',
+  addition_choice: 'math',
+  subtraction_choice: 'math',
+  missing_number: 'patterns',
+  emoji_pattern: 'patterns',
+  emoji_pattern_easy: 'patterns',
+  clock: 'math',
+  free: 'mixed',
+};
+
+export function getTaskCategory(type) {
+  return CATEGORY_MAP[type] || 'mixed';
+}
 
 export function shuffleDeck(list) {
   const a = [...list];
@@ -30,10 +62,18 @@ function shuffle(list) {
 
 function uniqueChoices(correct, pool, total = 3) {
   const choices = new Set([String(correct)]);
-  while (choices.size < total) {
-    choices.add(String(sample(pool)));
+  const normalizedPool = [...new Set(pool.map((item) => String(item)))];
+  let guard = 0;
+  while (choices.size < total && guard < 50) {
+    choices.add(sample(normalizedPool));
+    guard += 1;
   }
-  return shuffle([...choices]);
+  let fallback = 0;
+  while (choices.size < total && fallback <= 20) {
+    choices.add(String(fallback));
+    fallback += 1;
+  }
+  return shuffle([...choices].slice(0, total));
 }
 
 function offsetLetter(letter, shift) {
@@ -42,7 +82,7 @@ function offsetLetter(letter, shift) {
 }
 
 function buildTask(def, profileName) {
-  const task = { ...def };
+  const task = { ...def, basePoints: def.points, category: getTaskCategory(def.type) };
 
   if (task.type === 'letters' || task.type === 'letters_easy') {
     task.target = sample(LETTERS);
@@ -135,6 +175,26 @@ function buildTask(def, profileName) {
     task.answer = String(Math.max(a, b));
     task.choices = shuffle([String(a), String(b)]);
     task.memoryKey = `${task.type}:${a}:${b}`;
+  } else if (task.type === 'friends_of_ten' || task.type === 'friends_of_ten_easy') {
+    const left = Math.floor(Math.random() * 11);
+    const right = 10 - left;
+    task.friendNumber = left;
+    task.missingNumber = right;
+    task.prompt = sample(FRIENDS_OF_TEN_PROMPTS)(left);
+    task.target = `${left} + ? = 10`;
+    task.answer = String(right);
+    task.tenPair = [left, right];
+    if (task.type === 'friends_of_ten_easy') {
+      const pool = Array.from(new Set([
+        right,
+        Math.max(0, right - 1),
+        Math.min(10, right + 1),
+        10 - Math.max(0, left - 1),
+        Math.floor(Math.random() * 11),
+      ])).filter((n) => n >= 0 && n <= 10);
+      task.choices = uniqueChoices(right, pool, 3);
+    }
+    task.memoryKey = `${task.type}:${left}:${right}:${task.prompt}`;
   } else if (task.type === 'addition_choice' || task.type === 'subtraction_choice') {
     let a = Math.floor(Math.random() * 8) + 2;
     let b = Math.floor(Math.random() * 8) + 1;
@@ -181,16 +241,47 @@ function buildTask(def, profileName) {
   return task;
 }
 
-function filterAvailableTasks(profileName, state) {
+function getAvailableTasks(profileName, state) {
   const prof = state.profiles[profileName];
   const list = profileName === 'lidia' ? TASKS_LIDIA : TASKS_NEREA;
-  return list.filter((task) => !task.minCompleted || prof.tasksCompleted >= task.minCompleted);
+  const unlocked = list.filter((task) => !task.minCompleted || prof.tasksCompleted >= task.minCompleted);
+  const requestedMode = state.activeBoss?.mode || state.pendingEvent?.forceMode || state.mode;
+  if (requestedMode === 'mixed') return unlocked;
+  const filtered = unlocked.filter((task) => {
+    const category = getTaskCategory(task.type);
+    return category === requestedMode || (requestedMode === 'patterns' && task.type === 'count_by5') || (requestedMode === 'patterns' && task.type === 'count_by10');
+  });
+  return filtered.length ? filtered : unlocked;
+}
+
+function decorateTaskForState(task, state) {
+  const event = state.pendingEvent;
+  state.activeTaskEvent = null;
+  if (event) {
+    task.eventMeta = event;
+    state.activeTaskEvent = event;
+    state.pendingEvent = null;
+  }
+
+  if (state.activeBoss) {
+    task.points += 1;
+    task.badge = `👑 ${task.badge}`;
+    task.title = `${state.activeBoss.title} · ${task.title}`;
+    task.prompt = `${task.prompt} Boss task ${4 - state.activeBoss.remaining}/3!`;
+  }
+
+  if (task.eventMeta?.type === 'double-coins') {
+    task.points *= 2;
+    task.title = `Golden Task · ${task.title}`;
+  }
+
+  return task;
 }
 
 export function createTaskEngine({ state, renderTask, setSparks, highlightKey }) {
   function generateTask() {
     const profileName = state.profile;
-    const list = filterAvailableTasks(profileName, state);
+    const list = getAvailableTasks(profileName, state);
 
     if (!state.taskQueue || state.taskQueue.length === 0) {
       state.taskQueue = shuffleDeck(list);
@@ -220,6 +311,8 @@ export function createTaskEngine({ state, renderTask, setSparks, highlightKey })
       task = buildTask(sample(list), profileName);
     }
 
+    task = decorateTaskForState(task, state);
+
     if (task.target && /^[A-Z]$/.test(task.target)) {
       highlightKey(task.target);
     } else {
@@ -229,7 +322,7 @@ export function createTaskEngine({ state, renderTask, setSparks, highlightKey })
     state.currentTask = task;
     pushRecentTask(task);
     renderTask(task);
-    setSparks('🤓', task.prompt);
+    setSparks('🤓', task.eventMeta?.message || task.prompt);
     document.getElementById('task-badge').textContent = task.badge;
     document.getElementById('task-title-text').textContent = task.title;
   }
