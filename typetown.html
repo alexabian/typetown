@@ -202,7 +202,78 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .mini-farm{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
 .mini-animal{font-size:1.1rem;line-height:1;}
 
+/* PONY SPECIAL MODE */
+.pony-shell{width:100%;max-width:1040px;display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start;}
+.pony-panel{background:var(--white);border-radius:24px;padding:1.2rem 1.25rem;box-shadow:0 8px 32px var(--shadow);border:2px solid rgba(200,160,220,0.25);}
+.pony-hero{display:flex;flex-direction:column;gap:10px;}
+.pony-kicker{display:inline-flex;align-items:center;gap:6px;background:var(--lavender);color:#4A35A0;border-radius:99px;padding:5px 12px;font-size:0.72rem;font-weight:900;width:max-content;}
+.pony-title{font-size:2rem;font-weight:900;color:var(--ink);line-height:1.05;}
+.pony-sub{font-size:0.92rem;color:var(--ink-light);font-weight:600;line-height:1.6;}
+.pony-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:0.25rem;}
+.pony-stat{background:var(--cream);border-radius:16px;padding:0.75rem;text-align:center;}
+.pony-stat-value{font-size:1.4rem;font-weight:900;color:var(--ink);}
+.pony-stat-label{font-size:0.7rem;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.05em;}
+.pony-menu{display:grid;gap:10px;margin-top:0.5rem;}
+.pony-mode-btn{width:100%;background:linear-gradient(135deg,var(--white),#FFF6FB);border:2px solid rgba(200,160,220,0.35);border-radius:18px;padding:0.9rem 1rem;text-align:left;font-family:'Nunito',sans-serif;cursor:pointer;transition:all 0.15s;display:flex;align-items:flex-start;gap:10px;}
+.pony-mode-btn:hover{transform:translateY(-2px);border-color:var(--pink-dark);box-shadow:0 10px 26px rgba(180,140,200,0.18);}
+.pony-mode-btn.active{background:linear-gradient(135deg,var(--pink),#FFEAF5);border-color:var(--pink-deep);}
+.pony-mode-icon{font-size:1.5rem;line-height:1;}
+.pony-mode-copy strong{display:block;font-size:0.92rem;color:var(--ink);}
+.pony-mode-copy span{display:block;font-size:0.74rem;color:var(--ink-light);line-height:1.45;margin-top:2px;}
+.pony-study-list{display:grid;gap:8px;margin-top:0.5rem;}
+.pony-study-card{background:linear-gradient(135deg,rgba(201,184,255,0.18),rgba(255,183,213,0.16));border:1px solid rgba(200,160,220,0.35);border-radius:16px;padding:0.8rem;}
+.pony-study-card h4{font-size:0.9rem;color:var(--ink);font-weight:900;margin-bottom:4px;}
+.pony-study-card p{font-size:0.76rem;color:var(--ink-light);line-height:1.5;font-weight:700;}
+.pony-shelf{background:linear-gradient(135deg,rgba(255,244,196,0.55),rgba(255,220,240,0.4));border:1px solid rgba(255,194,122,0.45);border-radius:18px;padding:0.9rem;display:grid;gap:8px;}
+.pony-shelf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.pony-shelf-head h4{font-size:0.88rem;color:#8A4A00;font-weight:900;}
+.pony-shelf-head span{font-size:0.72rem;color:var(--ink-light);font-weight:800;}
+.pony-shelf-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.pony-shelf-badge{background:rgba(255,255,255,0.8);border:2px solid rgba(255,194,122,0.38);border-radius:16px;padding:0.55rem 0.4rem;text-align:center;display:grid;gap:4px;min-height:92px;align-content:center;}
+.pony-shelf-badge img{width:40px;height:40px;object-fit:contain;justify-self:center;filter:drop-shadow(0 4px 8px rgba(180,140,200,0.2));}
+.pony-shelf-badge strong{font-size:0.72rem;line-height:1.2;color:var(--ink);}
+.pony-shelf-badge span{font-size:0.65rem;font-weight:800;color:var(--ink-light);}
+.pony-shelf-badge.locked{background:rgba(255,255,255,0.5);border-style:dashed;opacity:0.72;}
+.pony-shelf-badge.locked img{filter:grayscale(1) brightness(1.1);opacity:0.45;}
+.pony-stage{display:grid;gap:14px;}
+.pony-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pony-toolbar-badge{background:var(--yellow);color:#7A5500;border-radius:99px;padding:5px 12px;font-size:0.75rem;font-weight:900;}
+.pony-toolbar-note{color:var(--ink-light);font-size:0.82rem;font-weight:700;}
+.pony-visual-toggle{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;}
+.pony-visual-toggle[hidden]{display:none;}
+.pony-visual-btn{background:var(--white);border:2px solid rgba(200,160,220,0.35);border-radius:999px;padding:7px 12px;font-family:'Nunito',sans-serif;font-size:0.76rem;font-weight:900;color:var(--ink-light);cursor:pointer;transition:all 0.15s;}
+.pony-visual-btn:hover{transform:translateY(-1px);border-color:var(--lavender-dark);color:var(--ink);}
+.pony-visual-btn.active{background:linear-gradient(135deg,var(--pink),#FFEAF5);border-color:var(--pink-deep);color:var(--ink);}
+.pony-question-card{background:linear-gradient(180deg,#FFFDF9,rgba(255,248,240,0.85));border:2px dashed rgba(157,133,245,0.5);border-radius:24px;padding:1.2rem;display:grid;gap:12px;min-height:360px;}
+.pony-clue-tag-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.pony-clue-tag{background:rgba(184,228,255,0.42);border:1px solid rgba(91,196,255,0.45);border-radius:99px;padding:5px 10px;font-size:0.72rem;font-weight:800;color:#215B7A;}
+.pony-big-icon{display:flex;justify-content:center;align-items:center;min-height:180px;position:relative;}
+.pony-big-icon img{max-width:180px;max-height:180px;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(180,140,200,0.28));transition:filter 0.2s ease, transform 0.2s ease, opacity 0.2s ease;}
+.pony-big-icon.silhouette img{filter:brightness(0) saturate(0) contrast(1.05) drop-shadow(0 10px 18px rgba(100,85,130,0.28));opacity:0.92;transform:translateY(2px) scale(1.01);}
+.pony-visual-label{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);background:rgba(74,53,160,0.12);border:1px solid rgba(74,53,160,0.18);border-radius:999px;padding:5px 10px;font-size:0.72rem;font-weight:900;color:#4A35A0;}
+.pony-study-head{display:flex;align-items:center;gap:10px;}
+.pony-study-thumb{width:54px;height:54px;object-fit:contain;flex:0 0 auto;}
+.pony-prompt{font-size:1.2rem;font-weight:900;color:var(--ink);line-height:1.35;text-align:center;}
+.pony-subprompt{text-align:center;font-size:0.88rem;color:var(--ink-light);font-weight:700;line-height:1.5;}
+.pony-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.pony-choice-btn{background:var(--white);border:2px solid rgba(200,160,220,0.35);border-radius:18px;padding:0.95rem 0.9rem;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;color:var(--ink);cursor:pointer;transition:all 0.15s;min-height:74px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:left;}
+.pony-choice-thumb{width:42px;height:42px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 4px 8px rgba(180,140,200,0.2));}
+.pony-choice-label{display:block;line-height:1.25;}
+.pony-choice-btn:hover:not(:disabled){transform:translateY(-2px);border-color:var(--lavender-dark);background:#FCF9FF;}
+.pony-choice-btn.correct{background:rgba(184,240,216,0.35);border-color:var(--mint-dark);color:#155C42;}
+.pony-choice-btn.wrong{background:rgba(255,183,213,0.24);border-color:#D64E7F;color:#7A2147;}
+.pony-choice-btn:disabled{cursor:default;opacity:0.95;}
+.pony-feedback{min-height:26px;text-align:center;font-size:0.9rem;font-weight:800;color:var(--ink);}
+.pony-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.pony-action-btn{background:var(--lavender);border:2px solid var(--lavender-dark);border-radius:16px;padding:10px 18px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--ink);cursor:pointer;transition:all 0.15s;}
+.pony-action-btn:hover{transform:scale(1.04);}
+.pony-action-btn.alt{background:var(--white);border-color:rgba(200,160,220,0.35);color:var(--ink-light);}
+.pony-fact-box{background:rgba(255,212,184,0.22);border:1px solid rgba(255,176,122,0.45);border-radius:18px;padding:0.95rem;display:grid;gap:6px;}
+.pony-fact-box h4{font-size:0.9rem;color:#8A4A00;font-weight:900;}
+.pony-fact-box p{font-size:0.8rem;color:var(--ink);font-weight:700;line-height:1.6;}
+
 @media(max-width:640px){
+  .pony-shell,.pony-choice-grid,.pony-stats{grid-template-columns:1fr;}
   .sidebar{width:70px;padding:0.75rem 0.5rem;}
   .sidebar-logo,.player-badge h3,.player-badge .role,.coin-display span:first-child,.sparks-bubble{display:none;}
   .nav-btn span:not(.icon){display:none;}
@@ -263,6 +334,9 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       <button class="nav-btn active" id="nav-work" onclick="showWork()">
         <span class="icon">📄</span><span>Work</span>
       </button>
+      <button class="nav-btn" id="nav-pony" onclick="showPonyMenu()">
+        <span class="icon">🦄</span><span>Special</span>
+      </button>
       <button class="nav-btn" id="nav-farm" onclick="showFarm()">
         <span class="icon">🐣</span><span>My Farm</span>
       </button>
@@ -307,6 +381,75 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   </div>
   <div class="farm-grid" id="farm-grid"></div>
   <button style="background:var(--white);border:2px solid rgba(200,160,220,0.4);border-radius:14px;padding:8px 20px;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;color:var(--ink);cursor:pointer;margin-bottom:2rem;" onclick="leaveFarm()">← Back to work</button>
+</div>
+
+<!-- PONY SPECIAL -->
+<div id="screen-pony" class="screen" style="flex-direction:column;min-height:100vh;padding:1.5rem;gap:1rem;align-items:center;">
+  <div class="pony-shell">
+    <aside class="pony-panel pony-hero">
+      <div class="pony-kicker">🦄 Friendship Files</div>
+      <div class="pony-title">Special Menu</div>
+      <div class="pony-sub">Learn My Little Pony names with playful clues, then stretch into vocabulary, maths, and fun facts without leaving TypeTown.</div>
+      <div class="pony-stats">
+        <div class="pony-stat"><div class="pony-stat-value" id="pony-stars">0</div><div class="pony-stat-label">Stars</div></div>
+        <div class="pony-stat"><div class="pony-stat-value" id="pony-streak">0</div><div class="pony-stat-label">Streak</div></div>
+        <div class="pony-stat"><div class="pony-stat-value" id="pony-learned">0/6</div><div class="pony-stat-label">Known</div></div>
+      </div>
+
+      <div class="pony-menu">
+        <button class="pony-mode-btn active" id="pony-mode-names" onclick="startPonyRound('names', this)">
+          <span class="pony-mode-icon">🎠</span>
+          <span class="pony-mode-copy"><strong>Who’s That Pony?</strong><span>Match clues to the correct name.</span></span>
+        </button>
+        <button class="pony-mode-btn" id="pony-mode-vocab" onclick="startPonyRound('vocab', this)">
+          <span class="pony-mode-icon">📚</span>
+          <span class="pony-mode-copy"><strong>Pony Words</strong><span>Tie each pony to useful vocabulary words.</span></span>
+        </button>
+        <button class="pony-mode-btn" id="pony-mode-maths" onclick="startPonyRound('maths', this)">
+          <span class="pony-mode-icon">➕</span>
+          <span class="pony-mode-copy"><strong>Pony Maths</strong><span>Use the characters inside little number stories.</span></span>
+        </button>
+      </div>
+
+      <div class="pony-shelf">
+        <div class="pony-shelf-head">
+          <h4>Sticker shelf</h4>
+          <span id="pony-shelf-count">0 / 6 collected</span>
+        </div>
+        <div class="pony-shelf-grid" id="pony-shelf"></div>
+      </div>
+
+      <div class="pony-study-list" id="pony-study-list"></div>
+    </aside>
+
+    <section class="pony-panel pony-stage">
+      <div class="pony-toolbar">
+        <span class="pony-toolbar-badge" id="pony-mode-badge">Name Match</span>
+        <span class="pony-toolbar-note" id="pony-mode-note">Clues, choices, coins, and a tiny memory adventure.</span>
+        <div class="pony-visual-toggle" id="pony-visual-toggle" hidden>
+          <button class="pony-visual-btn active" id="pony-visual-color" onclick="setPonyVisualMode('color', this)">🌈 Full color</button>
+          <button class="pony-visual-btn" id="pony-visual-silhouette" onclick="setPonyVisualMode('silhouette', this)">🕵️ Silhouette</button>
+        </div>
+      </div>
+
+      <div class="pony-question-card">
+        <div class="pony-big-icon" id="pony-big-icon">🦄</div>
+        <div class="pony-prompt" id="pony-prompt">Press a mode to begin.</div>
+        <div class="pony-subprompt" id="pony-subprompt">Friendship Files adds a little themed academy inside TypeTown.</div>
+        <div class="pony-clue-tag-wrap" id="pony-clues"></div>
+        <div class="pony-choice-grid" id="pony-choices"></div>
+        <div class="pony-feedback" id="pony-feedback"></div>
+        <div class="pony-actions">
+          <button class="pony-action-btn" onclick="nextPonyRound()">Next challenge ➜</button>
+          <button class="pony-action-btn alt" onclick="showWork()">Back to work</button>
+        </div>
+        <div class="pony-fact-box" id="pony-fact-box">
+          <h4>More than names</h4>
+          <p>Each round can also teach role words, personality traits, or mini maths facts so the theme reinforces reading and number sense too.</p>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 
 <div class="coin-rain" id="coin-rain"></div>
@@ -406,6 +549,20 @@ const TASKS_NEREA = [
   {type:'free',         badge:'Free Typing', title:'Fun Notes',         prompt:'Type anything — you are amazing!',     points:1},
 ];
 
+const PONIES = [
+  {name:'Twilight Sparkle', image:'assets/pony/twilight-sparkle.png', clue:'loves books and magic', cutie:'sparkle star', fact:'She studies magic and often solves problems by reading and thinking carefully.', vocabWord:'library', vocabHint:'A quiet place full of books.', trait:'leader'},
+  {name:'Rainbow Dash', image:'assets/pony/rainbow-dash.png', clue:'super fast flyer', cutie:'rainbow lightning bolt', fact:'She is brave, sporty, and loves speed and races.', vocabWord:'speed', vocabHint:'How fast something moves.', trait:'loyal'},
+  {name:'Applejack', image:'assets/pony/applejack.png', clue:'farm helper with apples', cutie:'three apples', fact:'She works on a farm and is known for honesty and hard work.', vocabWord:'harvest', vocabHint:'Bringing ripe food in from a farm.', trait:'honest'},
+  {name:'Rarity', image:'assets/pony/rarity.png', clue:'fashion and shiny gems', cutie:'three diamonds', fact:'She designs clothes and cares about beauty, style, and generosity.', vocabWord:'design', vocabHint:'To plan how something should look.', trait:'generous'},
+  {name:'Fluttershy', image:'assets/pony/fluttershy.png', clue:'gentle with animals', cutie:'pink butterflies', fact:'She is soft-spoken and loves helping animals feel safe.', vocabWord:'gentle', vocabHint:'Soft, kind, and careful.', trait:'kind'},
+  {name:'Pinkie Pie', image:'assets/pony/pinkie-pie.png', clue:'parties and laughter', cutie:'balloons', fact:'She brings fun and jokes and loves making everypony smile.', vocabWord:'celebrate', vocabHint:'To do something fun because something good happened.', trait:'funny'}
+];
+const PONY_MODE_META = {
+  names:{badge:'Name Match', note:'Learn names with clue cards, streaks, and coins.'},
+  vocab:{badge:'Pony Words', note:'Tie each pony to useful vocabulary words.'},
+  maths:{badge:'Pony Maths', note:'Practice number stories with familiar characters.'}
+};
+
 const WORDS = ['cat','dog','sun','cup','hat','pen','bag','ant','egg','jam','log','map','net','owl','pin','red','big','run','sit','hop'];
 const EMOJIS_COUNT = ['🍎','⭐','🌸','🐱','🎈','🍦','🐥','💛','🦋','🌺','🍓','🌻','🍩','🌙','🎀','🍭','🌈','🎊','🍋','🚀','🌷','🎁','🫐','🍄','🏠','🎵','🌍','🍰','🐝','🎸','🌮','🎃','🦄','💎','🧁','🌊','🪐','🍕','⚡','🎯','🌵','🦩','🍇','🎠','🌟'];
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -416,26 +573,58 @@ const SPARKS_ENCOURAGE = ['Oops! Try again superstar 💕','Almost! You can do i
 let state = {
   profile: null,
   profiles: {
-    lidia: {coins:0, tasksCompleted:0, owned:[]},
-    nerea: {coins:0, tasksCompleted:0, owned:[]}
+    lidia: {coins:0, tasksCompleted:0, owned:[], pony:{stars:0, streak:0, best:0, learned:[], wins:{names:0,vocab:0,maths:0}}},
+    nerea: {coins:0, tasksCompleted:0, owned:[], pony:{stars:0, streak:0, best:0, learned:[], wins:{names:0,vocab:0,maths:0}}}
   },
   currentTask: null,
   taskIndex: 0,
   completedLines: [],
   farmFilter: 'common',
-  sessionCorrect: 0
+  sessionCorrect: 0,
+  ponyMode: 'names',
+  ponyRound: null,
+  ponyVisualMode: 'color',
+  ponyReveal: false
 };
+
+function normalizeProfile(profile) {
+  const safe = profile || {};
+  const pony = safe.pony || {};
+  const wins = pony.wins || {};
+  return {
+    coins: Number(safe.coins || 0),
+    tasksCompleted: Number(safe.tasksCompleted || 0),
+    owned: Array.isArray(safe.owned) ? safe.owned : [],
+    pony: {
+      stars: Number(pony.stars || 0),
+      streak: Number(pony.streak || 0),
+      best: Number(pony.best || 0),
+      learned: Array.isArray(pony.learned) ? pony.learned : [],
+      wins: {
+        names: Number(wins.names || 0),
+        vocab: Number(wins.vocab || 0),
+        maths: Number(wins.maths || 0)
+      }
+    }
+  };
+}
 
 function loadState() {
   try {
-    const s = localStorage.getItem('typetown_v2');
-    if (s) state.profiles = JSON.parse(s).profiles || state.profiles;
+    const s = localStorage.getItem('typetown_v3') || localStorage.getItem('typetown_v2');
+    if (s) {
+      const parsed = JSON.parse(s).profiles || state.profiles;
+      state.profiles = {
+        lidia: normalizeProfile(parsed.lidia),
+        nerea: normalizeProfile(parsed.nerea)
+      };
+    }
   } catch(e){}
   document.getElementById('lidia-coins-home').textContent = state.profiles.lidia.coins;
   document.getElementById('nerea-coins-home').textContent = state.profiles.nerea.coins;
 }
 function saveState() {
-  localStorage.setItem('typetown_v2', JSON.stringify({profiles: state.profiles}));
+  localStorage.setItem('typetown_v3', JSON.stringify({profiles: state.profiles}));
 }
 
 // ═══════════════ AUDIO ═══════════════
@@ -530,6 +719,219 @@ function updateSidebar() {
     const a = ANIMALS.find(x=>x.id===id);
     return a ? `<span class="mini-animal" title="${a.name}">${a.emoji}</span>` : '';
   }).join('');
+}
+
+function setActiveNav(navId) {
+  ['nav-work','nav-pony','nav-farm'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('active', id===navId);
+  });
+}
+
+function updatePonyHud() {
+  if (!state.profile) return;
+  const pony = state.profiles[state.profile].pony;
+  document.getElementById('pony-stars').textContent = pony.stars;
+  document.getElementById('pony-streak').textContent = pony.streak;
+  document.getElementById('pony-learned').textContent = `${pony.learned.length}/${PONIES.length}`;
+  document.getElementById('pony-shelf-count').textContent = `${pony.learned.length} / ${PONIES.length} collected`;
+  document.getElementById('pony-shelf').innerHTML = PONIES.map(ponyCard=>{
+    const unlocked = pony.learned.includes(ponyCard.name);
+    return `
+      <div class="pony-shelf-badge ${unlocked ? 'unlocked' : 'locked'}">
+        <img src="${ponyCard.image}" alt="${unlocked ? ponyCard.name : 'Locked pony sticker'}">
+        <strong>${unlocked ? ponyCard.name : 'Mystery pony'}</strong>
+        <span>${unlocked ? 'Collected!' : 'Win a round to unlock'}</span>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('pony-study-list').innerHTML = PONIES.map(ponyCard=>`
+    <div class="pony-study-card">
+      <div class="pony-study-head">
+        <img class="pony-study-thumb" src="${ponyCard.image}" alt="${ponyCard.name}">
+        <h4>${ponyCard.name}</h4>
+      </div>
+      <p>${ponyCard.clue} · cutie mark: ${ponyCard.cutie} · word: ${ponyCard.vocabWord}</p>
+    </div>
+  `).join('');
+}
+
+function shuffle(list) {
+  const arr = [...list];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function sampleChoices(correct, getter, size=4) {
+  const pool = shuffle(PONIES.filter(p=>getter(p)!==getter(correct)));
+  return shuffle([correct, ...pool.slice(0, size-1)]);
+}
+
+function renderPonyChoice(choice, mode) {
+  const thumb = choice.image ? `<img class="pony-choice-thumb" src="${choice.image}" alt="">` : '';
+  const label = `<span class="pony-choice-label">${choice.label}</span>`;
+  return `<button class="pony-choice-btn" onclick="answerPonyChoice(this, ${choice.correct})">${mode === 'maths' ? label : `${thumb}${label}`}</button>`;
+}
+
+function updatePonyVisualControls() {
+  const toggle = document.getElementById('pony-visual-toggle');
+  if (!toggle) return;
+  const namesMode = state.ponyMode === 'names';
+  toggle.hidden = !namesMode;
+  document.querySelectorAll('.pony-visual-btn').forEach(btn=>btn.classList.remove('active'));
+  const active = document.getElementById(`pony-visual-${state.ponyVisualMode}`);
+  if (namesMode && active) active.classList.add('active');
+}
+
+function setPonyVisualMode(mode, btn) {
+  state.ponyVisualMode = mode;
+  document.querySelectorAll('.pony-visual-btn').forEach(el=>el.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  state.ponyReveal = false;
+  if (state.ponyRound) renderPonyRound();
+}
+
+function buildPonyRound(mode) {
+  const pony = PONIES[Math.floor(Math.random()*PONIES.length)];
+  if (mode === 'names') {
+    return {
+      mode,
+      pony,
+      icon: pony.image,
+      prompt: `Which pony matches these clues?`,
+      subprompt: `Use the cutie mark and personality clue to spot the right friend. Try silhouette mode for a harder visual round.`,
+      clues: [pony.clue, `cutie mark: ${pony.cutie}`, `trait: ${pony.trait}`],
+      choices: sampleChoices(pony, p=>p.name).map(p=>({label:p.name, image:p.image, correct:p.name===pony.name})),
+      factTitle: `${pony.name} fact file`,
+      factText: pony.fact,
+      reward: 4,
+      success: `Correct! ${pony.name} joins your memory parade.`
+    };
+  }
+  if (mode === 'vocab') {
+    return {
+      mode,
+      pony,
+      icon: pony.image,
+      prompt: `${pony.name} is on screen. Which word belongs with this pony?`,
+      subprompt: `Build vocabulary by linking each character to a useful word.`,
+      clues: [pony.clue, pony.fact],
+      choices: sampleChoices(pony, p=>p.vocabWord).map(p=>({label:p.vocabWord, image:p.image, correct:p.name===pony.name})),
+      factTitle: `Word helper: ${pony.vocabWord}`,
+      factText: pony.vocabHint,
+      reward: 5,
+      success: `Yes! ${pony.vocabWord} matches ${pony.name}.`
+    };
+  }
+  const a = Math.floor(Math.random()*6)+2;
+  const b = Math.floor(Math.random()*6)+1;
+  const question = `${pony.name} packs ${a} party bags and adds ${b} more. How many bags are there now?`;
+  const answer = a+b;
+  const numberChoices = shuffle([answer, answer+1, Math.max(0, answer-1), answer+2]).slice(0,4);
+  return {
+    mode,
+    pony,
+    icon: pony.image,
+    prompt: question,
+    subprompt: `Use the pony story to solve the number problem.`,
+    clues: [`start with ${a}`, `add ${b}`, `count carefully`],
+    choices: numberChoices.map(n=>({label:String(n), correct:n===answer})),
+    factTitle: `Maths bridge`,
+    factText: `${pony.name} makes the number story easier to picture: ${a} + ${b} = ${answer}.`,
+    reward: 6,
+    success: `Nice counting! ${a} + ${b} = ${answer}.`
+  };
+}
+
+function renderPonyRound() {
+  if (!state.ponyRound) return;
+  const round = state.ponyRound;
+  const meta = PONY_MODE_META[round.mode];
+  const silhouette = round.mode === 'names' && state.ponyVisualMode === 'silhouette' && !state.ponyReveal;
+  const imageOnlyNames = round.mode === 'names' && state.ponyVisualMode === 'silhouette' && !state.ponyReveal;
+  const visualLabel = round.mode === 'names'
+    ? `<span class="pony-visual-label">${silhouette ? 'Silhouette challenge · +2 bonus stars' : 'Full-color clue'}</span>`
+    : '';
+  document.getElementById('pony-mode-badge').textContent = meta.badge;
+  document.getElementById('pony-mode-note').textContent = imageOnlyNames
+    ? 'Hard mode: guess from the silhouette first, then reveal the clues after you answer.'
+    : meta.note;
+  document.getElementById('pony-big-icon').classList.toggle('silhouette', silhouette);
+  document.getElementById('pony-big-icon').innerHTML = `<img src="${round.icon}" alt="${round.pony.name}">${visualLabel}`;
+  document.getElementById('pony-prompt').textContent = imageOnlyNames ? `Who's that pony?` : round.prompt;
+  document.getElementById('pony-subprompt').textContent = imageOnlyNames
+    ? `No text clues yet — use the shape and mane silhouette. You earn +2 bonus stars for this harder guess.`
+    : round.subprompt;
+  document.getElementById('pony-clues').innerHTML = imageOnlyNames
+    ? `<span class="pony-clue-tag">🔒 Clues reveal after your guess</span>`
+    : round.clues.map(clue=>`<span class="pony-clue-tag">${clue}</span>`).join('');
+  document.getElementById('pony-choices').innerHTML = round.choices.map(choice=>renderPonyChoice(choice, round.mode)).join('');
+  document.getElementById('pony-feedback').textContent = '';
+  document.getElementById('pony-fact-box').innerHTML = `<h4>${round.factTitle}</h4><p>${round.factText}</p>`;
+  updatePonyVisualControls();
+}
+
+function showPonyMenu() {
+  setActiveNav('nav-pony');
+  showScreen('pony');
+  updatePonyHud();
+  if (!state.ponyRound) state.ponyRound = buildPonyRound(state.ponyMode || 'names');
+  renderPonyRound();
+}
+
+function startPonyRound(mode, btn) {
+  state.ponyMode = mode;
+  state.ponyReveal = false;
+  document.querySelectorAll('.pony-mode-btn').forEach(el=>el.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  state.ponyRound = buildPonyRound(mode);
+  renderPonyRound();
+  updatePonyHud();
+}
+
+function nextPonyRound() {
+  const activeBtn = document.getElementById(`pony-mode-${state.ponyMode}`);
+  startPonyRound(state.ponyMode, activeBtn);
+}
+
+function answerPonyChoice(button, isCorrect) {
+  const round = state.ponyRound;
+  const prof = state.profiles[state.profile];
+  const pony = prof.pony;
+  const silhouetteBonus = round.mode === 'names' && state.ponyVisualMode === 'silhouette' ? 2 : 0;
+  document.querySelectorAll('.pony-choice-btn').forEach(btn=>btn.disabled = true);
+  state.ponyReveal = true;
+  document.getElementById('pony-big-icon').classList.remove('silhouette');
+  document.getElementById('pony-prompt').textContent = round.prompt;
+  document.getElementById('pony-subprompt').textContent = round.subprompt;
+  document.getElementById('pony-clues').innerHTML = round.clues.map(clue=>`<span class="pony-clue-tag">${clue}</span>`).join('');
+  if (isCorrect) {
+    button.classList.add('correct');
+    pony.stars += round.reward + silhouetteBonus;
+    pony.streak += 1;
+    pony.best = Math.max(pony.best, pony.streak);
+    pony.wins[round.mode] += 1;
+    if (!pony.learned.includes(round.pony.name)) pony.learned.push(round.pony.name);
+    prof.coins += 2;
+    const bonusText = silhouetteBonus ? ` +${silhouetteBonus} silhouette bonus!` : '';
+    document.getElementById('pony-feedback').textContent = `${round.success} +${round.reward} stars and +2 coins!${bonusText}`;
+    setSparks('🦄', round.success);
+    playSuccess();
+  } else {
+    button.classList.add('wrong');
+    pony.streak = 0;
+    const correctBtn = Array.from(document.querySelectorAll('.pony-choice-btn')).find(btn=>btn.getAttribute('onclick')?.includes('true'));
+    if (correctBtn) correctBtn.classList.add('correct');
+    document.getElementById('pony-feedback').textContent = `Almost! The right answer was ${round.mode==='maths' ? round.choices.find(c=>c.correct).label : round.pony.name}.`;
+    setSparks('💭', `Let's try another ${PONY_MODE_META[round.mode].badge.toLowerCase()} round!`);
+    playWrong();
+  }
+  saveState();
+  updateSidebar();
+  updatePonyHud();
 }
 
 // ═══════════════ TASKS ═══════════════
@@ -821,19 +1223,16 @@ document.addEventListener('keydown', e=>{
 let farmFilter = 'common';
 
 function showFarm() {
-  document.getElementById('nav-work').classList.remove('active');
-  document.getElementById('nav-farm').classList.add('active');
+  setActiveNav('nav-farm');
   showScreen('farm');
   renderFarm();
 }
 function leaveFarm() {
-  document.getElementById('nav-farm').classList.remove('active');
-  document.getElementById('nav-work').classList.add('active');
+  setActiveNav('nav-work');
   showScreen('game');
 }
 function showWork() {
-  document.getElementById('nav-farm').classList.remove('active');
-  document.getElementById('nav-work').classList.add('active');
+  setActiveNav('nav-work');
   showScreen('game');
 }
 
@@ -924,6 +1323,8 @@ function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   if (name==='farm') {
     document.getElementById('screen-farm').classList.add('active');
+  } else if (name==='pony') {
+    document.getElementById('screen-pony').classList.add('active');
   } else if (name==='game') {
     document.getElementById('screen-game').classList.add('active');
   } else if (name==='profile') {
