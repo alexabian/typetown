@@ -257,6 +257,9 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .pony-subprompt{text-align:center;font-size:0.88rem;color:var(--ink-light);font-weight:700;line-height:1.5;}
 .pony-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
 .pony-choice-btn{background:var(--white);border:2px solid rgba(200,160,220,0.35);border-radius:18px;padding:0.95rem 0.9rem;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;color:var(--ink);cursor:pointer;transition:all 0.15s;min-height:74px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:left;}
+.pony-choice-btn.image-only{padding:0.9rem;min-height:160px;flex-direction:column;gap:8px;text-align:center;}
+.pony-choice-btn.image-only .pony-choice-thumb{width:92px;height:92px;}
+.pony-choice-btn.image-only .pony-choice-label{font-size:0.8rem;color:var(--ink-light);}
 .pony-choice-thumb{width:42px;height:42px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 4px 8px rgba(180,140,200,0.2));}
 .pony-choice-label{display:block;line-height:1.25;}
 .pony-choice-btn:hover:not(:disabled){transform:translateY(-2px);border-color:var(--lavender-dark);background:#FCF9FF;}
@@ -770,16 +773,21 @@ function sampleChoices(correct, getter, size=4) {
   return shuffle([correct, ...pool.slice(0, size-1)]);
 }
 
+function isNereaPictureMatchRound(round = state.ponyRound) {
+  return state.profile === 'nerea' && round?.mode === 'names';
+}
+
 function renderPonyChoice(choice, mode) {
+  const imageOnly = choice.imageOnly || false;
   const thumb = choice.image ? `<img class="pony-choice-thumb" src="${choice.image}" alt="">` : '';
-  const label = `<span class="pony-choice-label">${choice.label}</span>`;
-  return `<button class="pony-choice-btn" onclick="answerPonyChoice(this, ${choice.correct})">${mode === 'maths' ? label : `${thumb}${label}`}</button>`;
+  const label = choice.label ? `<span class="pony-choice-label">${choice.label}</span>` : '';
+  return `<button class="pony-choice-btn ${imageOnly ? 'image-only' : ''}" onclick="answerPonyChoice(this, ${choice.correct})">${mode === 'maths' ? label : `${thumb}${label}`}</button>`;
 }
 
 function updatePonyVisualControls() {
   const toggle = document.getElementById('pony-visual-toggle');
   if (!toggle) return;
-  const namesMode = state.ponyMode === 'names';
+  const namesMode = state.ponyMode === 'names' && state.profile !== 'nerea';
   toggle.hidden = !namesMode;
   document.querySelectorAll('.pony-visual-btn').forEach(btn=>btn.classList.remove('active'));
   const active = document.getElementById(`pony-visual-${state.ponyVisualMode}`);
@@ -797,18 +805,30 @@ function setPonyVisualMode(mode, btn) {
 function buildPonyRound(mode) {
   const pony = PONIES[Math.floor(Math.random()*PONIES.length)];
   if (mode === 'names') {
+    const nereaPictureMatch = state.profile === 'nerea';
     return {
       mode,
       pony,
       icon: pony.image,
-      prompt: `Which pony matches these clues?`,
-      subprompt: `Use the cutie mark and personality clue to spot the right friend. Try silhouette mode for a harder visual round.`,
-      clues: [pony.clue, `cutie mark: ${pony.cutie}`, `trait: ${pony.trait}`],
-      choices: sampleChoices(pony, p=>p.name).map(p=>({label:p.name, image:p.image, correct:p.name===pony.name})),
+      prompt: nereaPictureMatch ? `Tap the same pony picture.` : `Which pony matches these clues?`,
+      subprompt: nereaPictureMatch
+        ? `Easy picture mode for Nerea — just match the pony image. No reading needed.`
+        : `Use the cutie mark and personality clue to spot the right friend. Try silhouette mode for a harder visual round.`,
+      clues: nereaPictureMatch
+        ? [`same pony`, `look at the colors`, `tap the matching picture`]
+        : [pony.clue, `cutie mark: ${pony.cutie}`, `trait: ${pony.trait}`],
+      choices: sampleChoices(pony, p=>p.name).map(p=>({
+        label: nereaPictureMatch ? '' : p.name,
+        image: p.image,
+        imageOnly: nereaPictureMatch,
+        correct:p.name===pony.name
+      })),
       factTitle: `${pony.name} fact file`,
       factText: pony.fact,
       reward: 4,
-      success: `Correct! ${pony.name} joins your memory parade.`
+      success: nereaPictureMatch
+        ? `Yes! You matched ${pony.name}.`
+        : `Correct! ${pony.name} joins your memory parade.`
     };
   }
   if (mode === 'vocab') {
@@ -850,22 +870,25 @@ function renderPonyRound() {
   if (!state.ponyRound) return;
   const round = state.ponyRound;
   const meta = PONY_MODE_META[round.mode];
-  const silhouette = round.mode === 'names' && state.ponyVisualMode === 'silhouette' && !state.ponyReveal;
-  const imageOnlyNames = round.mode === 'names' && state.ponyVisualMode === 'silhouette' && !state.ponyReveal;
+  const nereaPictureMatch = isNereaPictureMatchRound(round);
+  const silhouette = round.mode === 'names' && !nereaPictureMatch && state.ponyVisualMode === 'silhouette' && !state.ponyReveal;
+  const silhouetteChallenge = round.mode === 'names' && !nereaPictureMatch && state.ponyVisualMode === 'silhouette' && !state.ponyReveal;
   const visualLabel = round.mode === 'names'
-    ? `<span class="pony-visual-label">${silhouette ? 'Silhouette challenge · +2 bonus stars' : 'Full-color clue'}</span>`
+    ? `<span class="pony-visual-label">${nereaPictureMatch ? 'Nerea easy mode · picture match' : silhouette ? 'Silhouette challenge · +2 bonus stars' : 'Full-color clue'}</span>`
     : '';
   document.getElementById('pony-mode-badge').textContent = meta.badge;
-  document.getElementById('pony-mode-note').textContent = imageOnlyNames
-    ? 'Hard mode: guess from the silhouette first, then reveal the clues after you answer.'
-    : meta.note;
+  document.getElementById('pony-mode-note').textContent = nereaPictureMatch
+    ? 'Easy mode for Nerea: big picture-only choices and no reading.'
+    : silhouetteChallenge
+      ? 'Hard mode: guess from the silhouette first, then reveal the clues after you answer.'
+      : meta.note;
   document.getElementById('pony-big-icon').classList.toggle('silhouette', silhouette);
   document.getElementById('pony-big-icon').innerHTML = `<img src="${round.icon}" alt="${round.pony.name}">${visualLabel}`;
-  document.getElementById('pony-prompt').textContent = imageOnlyNames ? `Who's that pony?` : round.prompt;
-  document.getElementById('pony-subprompt').textContent = imageOnlyNames
+  document.getElementById('pony-prompt').textContent = silhouetteChallenge ? `Who's that pony?` : round.prompt;
+  document.getElementById('pony-subprompt').textContent = silhouetteChallenge
     ? `No text clues yet — use the shape and mane silhouette. You earn +2 bonus stars for this harder guess.`
     : round.subprompt;
-  document.getElementById('pony-clues').innerHTML = imageOnlyNames
+  document.getElementById('pony-clues').innerHTML = silhouetteChallenge
     ? `<span class="pony-clue-tag">🔒 Clues reveal after your guess</span>`
     : round.clues.map(clue=>`<span class="pony-clue-tag">${clue}</span>`).join('');
   document.getElementById('pony-choices').innerHTML = round.choices.map(choice=>renderPonyChoice(choice, round.mode)).join('');
@@ -901,7 +924,7 @@ function answerPonyChoice(button, isCorrect) {
   const round = state.ponyRound;
   const prof = state.profiles[state.profile];
   const pony = prof.pony;
-  const silhouetteBonus = round.mode === 'names' && state.ponyVisualMode === 'silhouette' ? 2 : 0;
+  const silhouetteBonus = round.mode === 'names' && !isNereaPictureMatchRound(round) && state.ponyVisualMode === 'silhouette' ? 2 : 0;
   document.querySelectorAll('.pony-choice-btn').forEach(btn=>btn.disabled = true);
   state.ponyReveal = true;
   document.getElementById('pony-big-icon').classList.remove('silhouette');
